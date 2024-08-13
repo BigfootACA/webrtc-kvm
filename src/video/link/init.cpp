@@ -41,6 +41,7 @@ void StreamLink::Initialize(StreamList*list,YAML::Node&cfg){
 	if(stream_source==stream_sink)throw InvalidArgument("link loop detected");
 	BufferType buff_type=BUFFER_NULL;
 	load_string_conv(cfg,type,buff_type,BufferType);
+	load_string_conv(cfg,fourcc,fourcc,Fourcc);
 	Initialize(stream_source,stream_sink,buff_type);
 	if(auto val_size=cfg["size"]){
 		if(val_size.IsScalar())planes[0].size=val_size.as<size_t>();
