@@ -34,6 +34,13 @@ enum StreamType{
 	STREAM_SINK = 3,
 };
 
+enum StreamPipeRole{
+	ROLE_NONE,
+	ROLE_ENCODER,
+	ROLE_DECODER,
+	ROLE_CONVERTER,
+};
+
 struct StreamBuffer{
 	BufferType type;
 	uint32_t planes_cnt;
@@ -111,6 +118,7 @@ class Stream{
 		uint32_t error=0;
 		bool open_device=true;
 		webrtc_kvm*ctx;
+		StreamPipeRole role=ROLE_NONE;
 		StreamStatus status=STREAM_UNINITIALIZE;
 		std::shared_ptr<StreamLink>input,output;
 		std::string name,id;
@@ -143,4 +151,6 @@ class StreamList{
 		std::map<UUID,Stream*>streams_by_uuid;
 		std::map<std::string,Stream*>streams_by_id;
 };
+
+extern bool StringToPipeRole(const std::string&val,StreamPipeRole&role);
 #endif

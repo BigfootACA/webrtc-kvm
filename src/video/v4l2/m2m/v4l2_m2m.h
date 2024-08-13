@@ -21,12 +21,6 @@ class H264Options{
 		bool gop_closure=false;
 };
 
-enum MemoryToMemoryRole{
-	ROLE_NONE,
-	ROLE_ENCODER,
-	ROLE_DECODER,
-};
-
 class V4L2MemoryToMemory:public V4L2Device{
 	public:
 		~V4L2MemoryToMemory()override;
@@ -50,7 +44,6 @@ class V4L2MemoryToMemory:public V4L2Device{
 	protected:
 		V4L2Capture*cap=nullptr;
 		V4L2Output*out=nullptr;
-		MemoryToMemoryRole role=ROLE_NONE;
 		H264Options options_h264;
 };
 

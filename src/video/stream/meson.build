@@ -6,4 +6,5 @@ webrtc_kvm_src += files([
 	'poll.cpp',
 	'start.cpp',
 	'stop.cpp',
+	'string.cpp',
 ])
