@@ -1,0 +1,5 @@
+subdir('factory')
+subdir('link')
+subdir('list')
+subdir('stream')
+subdir('v4l2')

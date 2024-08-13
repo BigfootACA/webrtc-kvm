@@ -1,0 +1,1 @@
+../../../external/xtermjs/addon-web-links.js

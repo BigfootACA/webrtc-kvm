@@ -1,0 +1,15 @@
+webrtc_kvm_src += files([
+	'auth_check.cpp',
+	'auth_info.cpp',
+	'auth_login.cpp',
+	'auth_logout.cpp',
+	'exit.cpp',
+	'input_get_key_map.cpp',
+	'static.cpp',
+	'stream_start.cpp',
+	'stream_status.cpp',
+	'stream_stop.cpp',
+	'webrtc_get_sdp.cpp',
+	'webrtc_new.cpp',
+	'webrtc_set_sdp.cpp',
+])

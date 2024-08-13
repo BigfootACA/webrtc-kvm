@@ -1,0 +1,16 @@
+webrtc_kvm_src += files([
+	'bind.cpp',
+	'datachannel.cpp',
+	'enable.cpp',
+	'endpoint.cpp',
+	'event.cpp',
+	'factory.cpp',
+	'gathering.cpp',
+	'initialize.cpp',
+	'input.cpp',
+	'sdp.cpp',
+	'start.cpp',
+	'state.cpp',
+	'stream.cpp',
+	'track.cpp',
+])

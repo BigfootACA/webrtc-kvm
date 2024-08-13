@@ -1,0 +1,41 @@
+api:
+  port: 2345
+usb:
+  gadget: webrtc-kvm
+  id_vendor: 0x1D6B
+  id_product: 0x0104
+  manufacturer: ClassFun
+  product: WebRTC KVM
+video:
+  streams:
+    - id: hdmi-cap
+      name: HDMI Capture
+      driver: v4l2-cap
+      device: /dev/video-cap0
+      fourcc: NV12
+    - id: h264-encoder
+      name: H.264 Encoder
+      driver: v4l2-m2m
+      device: /dev/video-enc0
+      role: encoder
+      fourcc: H264
+      h264:
+        profile: baseline
+        qp_i: 24
+        qp_p: 26
+        gop_closure: no
+        gop_size: 3
+    - id: webrtc
+      name: WebRTC Streamer
+      driver: webrtc
+  links:
+    - source: hdmi-cap
+      sink: h264-encoder
+      type: pointer
+    - source: h264-encoder
+      sink: webrtc
+      type: pointer
+  auto_stop: true
+  width: 1920
+  height: 1080
+  fps: 60

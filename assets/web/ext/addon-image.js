@@ -1,0 +1,1 @@
+../../../external/xtermjs/addon-image.js

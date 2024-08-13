@@ -1,0 +1,9 @@
+[Unit]
+Description=WebRTC IP-KVM
+
+[Service]
+ExecStart=@bindir@/webrtc-kvm -f @sysconfdir@/webrtc-kvm/config.yaml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

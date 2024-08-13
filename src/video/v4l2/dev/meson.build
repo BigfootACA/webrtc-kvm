@@ -1,0 +1,14 @@
+webrtc_kvm_src += files([
+	'alloc.cpp',
+	'buffer.cpp',
+	'config.cpp',
+	'dequeue.cpp',
+	'device.cpp',
+	'dmabuf.cpp',
+	'format.cpp',
+	'init.cpp',
+	'link.cpp',
+	'mmap.cpp',
+	'queue.cpp',
+	'uptr.cpp',
+])

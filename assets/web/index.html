@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta name="referrer" content="always" />
+    <meta name="author" content="BigfootACA" />
+    <meta name="generator" content="GNU Nano 3.2"/>
+    <meta name="copyright" content="ClassFun Site"/>
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0" />
+    <meta http-equiv="cache-control" content="no-siteapp" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="res/index.css" />
+    <link rel="stylesheet" type="text/css" href="ext/material-components-web.css" />
+    <link rel="stylesheet" type="text/css" href="ext/MaterialIcons.css" />
+    <link rel="stylesheet" type="text/css" href="ext/xterm.css" />
+    <title>WebRTC KVM</title>
+  </head>
+  <body>
+    <span>Status: <span id="status">Loading</span></span>
+    <span>Outbound: <span id="outbound">0</span>bytes</span>
+    <div class="fullscreen center-mask" id="main-screen">
+      <div id="screen">
+        <video autoplay muted playsinline></video>
+        <canvas></canvas>
+      </div>
+      <div class="mdc-touch-target-wrapper" id="float-btn">
+        <button class="mdc-fab mdc-fab--mini mdc-fab--touch">
+          <div class="mdc-fab__ripple"></div>
+          <div class="mdc-fab__focus-ring"></div>
+          <span class="material-icons mdc-fab__icon">menu</span>
+          <div class="mdc-fab__touch"></div>
+        </button>
+      </div>
+      <div class="mdc-menu mdc-menu-surface" id="float-menu">
+        <div class="mdc-list-group" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+          <ul class="mdc-list">
+            <li class="mdc-list-item hidden" role="menuitem" id="connect">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">link</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Connect</span>
+              </span>
+            </li>
+            <li class="mdc-list-item hidden" role="menuitem" id="disconnect">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">link_off</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Disconnect</span>
+              </span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="fullscreen">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">fullscreen</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Fullscreen</span>
+              </span>
+            </li>
+            <li class="mdc-list-item hidden" role="menuitem" id="fullscreen-exit">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">fullscreen_exit</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Exit Fullscreen</span>
+              </span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="usb-redirect">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">usb</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">USB Redirect</span>
+                <span class="mdc-list-item__secondary-text">unimplemented</span>
+              </span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="remote-storage">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">storage</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Storage Forward</span>
+                <span class="mdc-list-item__secondary-text">unimplemented</span>
+              </span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="logout">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">logout</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Logout</span>
+              </span>
+            </li>
+          </ul>
+          <div class="mdc-list-group__subheader" data-target="radio-scale-mode">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-menu-radio-title">Screen scale</span>
+            <span class="mdc-menu-radio-expand material-icons">keyboard_arrow_down</span>
+          </div>
+          <ul class="mdc-list mdc-menu-radio" id="radio-scale-mode" data-presistent="true">
+            <li class="mdc-list-item" role="menuitem" id="scale-original">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">crop_landscape</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Original size</span>
+              </span>
+              <span class="mdc-list-item__graphic mdc-radio-status material-icons">radio_button_checked</span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="scale-fit">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">fit_screen</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Fit screen</span>
+              </span>
+              <span class="mdc-list-item__graphic mdc-radio-status material-icons">radio_button_unchecked</span>
+            </li>
+          </ul>
+          <div class="mdc-list-group__subheader" data-target="radio-mouse-mode">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-menu-radio-title">Mouse mode</span>
+            <span class="mdc-menu-radio-expand material-icons">keyboard_arrow_down</span>
+          </div>
+          <ul class="mdc-list mdc-menu-radio" id="radio-mouse-mode" data-presistent="true">
+            <li class="mdc-list-item" role="menuitem" id="mouse-absolute">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">edit</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Tablet (Absolute)</span>
+              </span>
+              <span class="mdc-list-item__graphic mdc-radio-status material-icons">radio_button_checked</span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="mouse-relative">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">mouse</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Mouse (Relative)</span>
+              </span>
+              <span class="mdc-list-item__graphic mdc-radio-status material-icons">radio_button_unchecked</span>
+            </li>
+            <li class="mdc-list-item" role="menuitem" id="mouse-touch">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__graphic material-icons">touch_app</span>
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text">Touch screen</span>
+              </span>
+              <span class="mdc-list-item__graphic mdc-radio-status material-icons">radio_button_unchecked</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="fullscreen center-mask" id="login-mask">
+      <div class="mdc-card" id="login-dialog"><form id="login-form">
+        <div class="login-title">Login into WebRTC KVM</div>
+        <label class="mdc-text-field mdc-text-field--outlined" id="box-username">
+          <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+              <span class="mdc-floating-label" id="label-username">Username</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+          </span>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            class="mdc-text-field__input"
+            aria-labelledby="label-username"
+            required/>
+        </label>
+        <label class="mdc-text-field mdc-text-field--outlined" id="box-password">
+          <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+              <span class="mdc-floating-label" id="lanel-password">Password</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+          </span>
+          <input
+            id="password"
+            name="password"
+            type="password" 
+            autocomplete="current-password"
+            class="mdc-text-field__input"
+            aria-labelledby="lanel-password"
+            required/>
+        </label>
+        <button id="login" class="mdc-button mdc-button--raised">
+          <span class="mdc-button__label">Login</span>
+        </button>
+        </form></div>
+    </div>
+    <div class="fullscreen center-mask" id="loading-mask">
+      <div id="page-loading" class="mdc-circular-progress hidden" style="width:128px;height:128px;" role="progressbar" aria-label="Example Progress Bar" aria-valuemin="0" aria-valuemax="1">
+        <div class="mdc-circular-progress__determinate-container">
+          <svg class="mdc-circular-progress__determinate-circle-graphic" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle class="mdc-circular-progress__determinate-track" cx="24" cy="24" r="18" stroke-width="4"/>
+            <circle class="mdc-circular-progress__determinate-circle" cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="113.097" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class="mdc-circular-progress__indeterminate-container">
+          <div class="mdc-circular-progress__spinner-layer">
+            <div class="mdc-circular-progress__circle-clipper mdc-circular-progress__circle-left">
+              <svg class="mdc-circular-progress__indeterminate-circle-graphic" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="56.549" stroke-width="4"/>
+              </svg>
+            </div>
+            <div class="mdc-circular-progress__gap-patch">
+              <svg class="mdc-circular-progress__indeterminate-circle-graphic" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="56.549" stroke-width="3.2"/>
+              </svg>
+            </div>
+            <div class="mdc-circular-progress__circle-clipper mdc-circular-progress__circle-right">
+              <svg class="mdc-circular-progress__indeterminate-circle-graphic" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="56.549" stroke-width="4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span id="page-loading-status">Loading</span>
+    </div>
+    <div class="mdc-dialog" id="msgbox-dialog">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="msgbox-title" aria-describedby="msgbox-content" tabindex="-1">
+          <div class="mdc-dialog__title" id="msgbox-title">Oh my title</div>
+          <div class="mdc-dialog__content" id="msgbox-content">Oh my content</div>
+          <div class="mdc-dialog__actions" id="msgbox-btns">
+            <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
+              <div class="mdc-button__ripple"></div>
+              <span class="mdc-button__label">Cancel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+  </body>
+  <script type="text/javascript" lang="javascript" src="ext/addon-attach.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-clipboard.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-fit.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-image.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-search.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-serialize.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-unicode11.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-webgl.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/addon-web-links.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/material-components-web.js"></script>
+  <script type="text/javascript" lang="javascript" src="ext/xterm.js"></script>
+  <script type="text/javascript" lang="javascript" src="res/index.js"></script>
+</html>

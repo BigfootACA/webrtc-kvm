@@ -1,0 +1,164 @@
+/*
+ *
+ * Copyright (C) 2024 BigfootACA <bigfoot@classfun.cn>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ */
+
+body{
+	overflow: hidden;
+}
+
+div#screen{
+	position: absolute;
+	overflow: hidden;
+	box-shadow: 0 0 3px 3px #222222;
+	background-color: black;
+	color: white;
+}
+
+.align-top{
+	margin-top: auto;
+	margin-bottom: 0;
+}
+
+.align-bottom{
+	margin-top: 0;
+	margin-bottom: auto;
+}
+
+.align-left, .align-start{
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.align-right, .align-end{
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.hidden{
+	display: none !important;
+}
+
+.animate-hidden{
+	opacity: 0 !important;
+	backdrop-filter: unset !important;    
+	transition: all 0.7s ease-out;
+}
+
+.no-cursor{
+	cursor: none;
+}
+
+div#screen video, div#screen canvas{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.fullscreen{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+}
+
+div.center-mask{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+div#main-screen{
+	background-color: #333333;
+}
+
+div#login-mask{
+	backdrop-filter: blur(5px);
+}
+
+div#loading-mask{
+	background-color: white;
+	flex-direction: column;
+}
+
+div#login-dialog{
+	width: 300px;
+	background-color: white;
+	padding: 20px;
+}
+
+div#login-dialog div.login-title{
+	padding-bottom: 12px;
+	text-align: center;
+	font-size: 1.2rem;
+}
+
+label#box-username, label#box-password{
+	margin-bottom: 10px;
+}
+
+label#box-username, label#box-password, button#login{
+	width: 100%;
+}
+
+div#msgbox-card{
+	width: 400px;
+}
+
+div#float-menu li.mdc-list-item{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-right: 25px;
+}
+
+div#float-menu span.mdc-list-item__text{
+	padding-left: 10px;
+}
+
+div.mdc-list-group__subheader{
+	margin-top: 0;
+	margin-bottom: 0;
+	color: gray;
+	font-size: 0.9rem;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+div.mdc-list-group__subheader span.mdc-menu-radio-expand{
+	margin-left: auto;
+	margin-right: 8px;
+}
+
+ul.mdc-menu-radio li.mdc-list-item span.mdc-radio-status{
+	margin-left: auto;
+	margin-right: 0;
+	padding-left:10px;
+}
+
+ul.mdc-list-hidden{
+	height: 0 !important;
+}
+
+ul.mdc-list{
+	overflow: hidden;
+	transition: height 0.2s ease-in;
+}
+
+li.mdc-list-item{
+	display: flex;
+	align-items: center;
+}
+
+li.mdc-list-item span.mdc-list-item__graphic{
+	height: 24px;	
+}
