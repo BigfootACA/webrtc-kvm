@@ -35,7 +35,7 @@ MHD_Result HttpHandler::Process(HttpRequestContext*ctx){
 		return ctx->HandleString(MHD_HTTP_NO_CONTENT,nullptr,"");
 	if(hand_method!=0&&!have_bit(hand_method,ctx->method))
 		throw HttpError(MHD_HTTP_METHOD_NOT_ALLOWED,"method unsupported");
-	if(NeedAuth()){
+	if(NeedAuth()&&!ctx->ctx->http.auth.no_auth){
 		auto status=ctx->auth->GetAuthTokenFromHeader(ctx->req_headers);
 		if(!status)throw HttpError(MHD_HTTP_UNAUTHORIZED,"authorization failed");
 		ctx->token=status;
