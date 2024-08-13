@@ -15,7 +15,6 @@ void V4L2Device::LoadGenericConfig(YAML::Node&obj){
 	if(auto v=obj["height"])height=v.as<uint32_t>();
 	if(auto v=obj["fps"])fps=v.as<uint32_t>();
 	if(auto v=obj["buffers"])buffer_cnt=v.as<uint32_t>();
-	if(auto v=obj["device"])path=v.as<std::string>();
 	load_string_conv(obj,fourcc,fourcc,Fourcc);
 	load_string_conv(obj,memory,memory,V4L2Memory);
 }
