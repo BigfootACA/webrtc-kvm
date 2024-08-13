@@ -37,7 +37,7 @@ void V4L2Device::InitializeBufferMMAP(V4L2StreamBuffer*buffer){
 			);
 			auto name=std::format(
 				"dev{}-buf{}-plane{}",
-				expbuf.fd,buffer->idx,idx_plane
+				device_fd,buffer->idx,idx_plane
 			);
 			xioctl(expbuf.fd,DMA_BUF_SET_NAME,name.c_str());
 		}else buffer->dmabuf_fds[idx_plane]=-1;
