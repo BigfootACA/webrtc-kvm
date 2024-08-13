@@ -112,6 +112,7 @@ class Stream{
 		virtual void DirectEnablePoll(int events=EPOLLIN);
 		virtual void DisablePoll();
 		virtual void DirectDisablePoll();
+		void TimestampFromFrames(timeval&tv,uint64_t frame);
 		int device_fd=-1;
 		UUID poll_id;
 		std::string path;
