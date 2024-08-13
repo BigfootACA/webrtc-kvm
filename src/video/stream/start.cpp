@@ -8,6 +8,7 @@
 
 #include"../stream.h"
 #include"lib/log.h"
+#include"lib/exception.h"
 
 void Stream::StartStream(bool all){
 	if(auto src=GetInputStream())if(src->GetStatus()!=STREAM_RUNNING){
@@ -26,6 +27,12 @@ void Stream::StartStream(bool all){
 	}
 	if(status==STREAM_UNINITIALIZE)try{
 		log_dbg("initializing stream {}",GetID());
+		switch(GetType()){
+			case STREAM_SOURCE:if(!output)throw InvalidArgument("no output for stream source");break;
+			case STREAM_PIPE:if(!input||!output)throw InvalidArgument("no input or output for stream pipe");break;
+			case STREAM_SINK:if(!input)throw InvalidArgument("no input for stream sink");break;
+			default:throw InvalidArgument("unknown stream type");
+		}
 		OnInitialize();
 		status=STREAM_STOPPED;
 		log_dbg("initialized stream {}",GetID());
