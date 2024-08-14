@@ -6,7 +6,7 @@ project(
     default_options: [
         'werror=true',
         'b_lto=false',
-        'cpp_std=gnu++20,c++20',
+        'cpp_std=gnu++20',
         'optimization=g',
     ],
     meson_version: '>=1.1.1',
