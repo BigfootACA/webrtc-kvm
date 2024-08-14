@@ -29,18 +29,10 @@ void GadgetHID::WriteReportDescriptor(const HIDReportDesc*desc){
 }
 
 dev_t GadgetHID::GetDevice(){
-	auto dev=ReadFileString(std::format("{}/dev",GetPath()));
-	auto i=dev.find(':');
-	if(i==std::string::npos)
-		throw RuntimeError("bad hid dev value");
-	auto num_major=std::stoi(dev.substr(0,i));
-	auto num_minor=std::stoi(dev.substr(i+1));
-	if(num_major==0||num_minor>=8)
-		throw RuntimeError("bad hid dev number");
-	auto path=std::format("/sys/dev/char/{}:{}/subsystem",num_major,num_minor);
-	if(PathBaseName(PathReadLink(path))!="hidg")
+	auto d=GetDeviceMajorMinor(GetPath());
+	if(GetDeviceSubsystem(d)!="hidg")
 		throw RuntimeError("target hid dev is not a hidg");
-	return makedev(num_major,num_minor);
+	return d;
 }
 
 std::string GadgetHID::GetDevicePath(){
