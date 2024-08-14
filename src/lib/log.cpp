@@ -39,4 +39,5 @@ void log::print(log::log_level level,const std::string&msg,std::source_location 
 		filename,c.line(),msg
 	);
 	puts(dest.c_str());
+	fflush(stdout);
 }
