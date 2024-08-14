@@ -9,6 +9,7 @@
 #ifndef STRINGS_H
 #define STRINGS_H
 #include<string>
+#include<vector>
 #include<fcntl.h>
 #include<cstdint>
 #include<cstdarg>
@@ -37,5 +38,13 @@ extern std::string DeviceGetUeventPath(mode_t type,dev_t dev);
 extern std::string DeviceReadUevent(mode_t type,dev_t dev);
 extern std::string DeviceGetUeventProperty(mode_t type,dev_t dev,const std::string&key);
 extern std::string PathFromDevice(mode_t type,dev_t dev);
+extern dev_t ParseDeviceMajorMinor(const std::string&mm);
+extern dev_t GetDeviceMajorMinor(const std::string&path);
+extern std::string GetDeviceSubsystem(dev_t dev);
+extern std::vector<dev_t>DevicesFromDevicePath(const std::string&path,const std::string&subsys);
+extern std::vector<dev_t>DevicesFromFolder(const std::string&path);
+extern std::vector<dev_t>DevicesFromSubsystem(const std::string&subsys);
+extern std::vector<dev_t>DevicesFromBus(const std::string&bus);
+extern std::string DeviceToString(dev_t d);
 extern int DeviceOpen(mode_t type,dev_t dev,int flags=O_RDWR|O_CLOEXEC);
 #endif

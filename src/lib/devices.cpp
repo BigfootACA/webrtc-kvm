@@ -13,6 +13,7 @@
 #include"exception.h"
 #include"strings.h"
 #include"files.h"
+#include"path.h"
 #include"webrtc_kvm.h"
 
 std::string GetFileProperty(const std::string&content,const std::string&key){
@@ -53,6 +54,52 @@ std::string DeviceGetUeventProperty(mode_t type,dev_t dev,const std::string&key)
 	return GetFileProperty(DeviceReadUevent(type,dev),key);
 }
 
+dev_t ParseDeviceMajorMinor(const std::string&mm){
+	auto i=mm.find(':');
+	if(i==std::string::npos)
+		throw RuntimeError("bad device value");
+	auto num_major=std::stoi(mm.substr(0,i));
+	auto num_minor=std::stoi(mm.substr(i+1));
+	return makedev(num_major,num_minor);
+}
+
+dev_t GetDeviceMajorMinor(const std::string&path){
+	return ParseDeviceMajorMinor(ReadFileString(std::format("{}/dev",path)));
+}
+
+std::string GetDeviceSubsystem(dev_t dev){
+	return PathBaseName(PathReadLink(std::format(
+		"/sys/dev/char/{}:{}/subsystem",
+		major(dev),minor(dev)
+	)));
+}
+
+std::vector<dev_t>DevicesFromFolder(const std::string&path){
+	dev_t d;
+	std::vector<dev_t>ret;
+	FolderReader dir(path);
+	while(auto e=dir.ReadItem()){
+		if(e->IsVirtual())continue;
+		auto full=path+"/"+e->GetName();
+		try{d=GetDeviceMajorMinor(full);}
+		catch(...){continue;}
+		ret.push_back(d);
+	}
+	return ret;
+}
+
+std::vector<dev_t>DevicesFromDevicePath(const std::string&path,const std::string&subsys){
+	return DevicesFromFolder(std::format("/sys/devices/{}/{}/",path,subsys));
+}
+
+std::vector<dev_t>DevicesFromSubsystem(const std::string&subsys){
+	return DevicesFromFolder(std::format("/sys/class/{}/",subsys));
+}
+
+std::vector<dev_t>DevicesFromBus(const std::string&bus){
+	return DevicesFromFolder(std::format("/sys/bus/{}/devices/",bus));
+}
+
 std::string PathFromDevice(mode_t type,dev_t dev){
 	struct stat st={};
 	auto devname=DeviceGetUeventProperty(type,dev,"DEVNAME");
@@ -63,6 +110,10 @@ std::string PathFromDevice(mode_t type,dev_t dev){
 	if((st.st_mode&S_IFMT)!=(type&S_IFMT)||st.st_rdev!=dev)
 		throw RuntimeError("device {} mismatch",path);
 	return path;
+}
+
+std::string DeviceToString(dev_t d){
+	return std::format("{}:{}",major(d),minor(d));
 }
 
 int DeviceOpen(mode_t type,dev_t dev,int flags){
