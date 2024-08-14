@@ -11,7 +11,10 @@
 void V4L2Device::InitializeDevice(){
 	if(status!=STREAM_UNINITIALIZE)
 		throw InvalidArgument("device already initialized");
-	if(device_fd<0)OpenDevice();
+	if(device_fd<0){
+		if(path.empty())FindMatchDevice();
+		OpenDevice();
+	}
 	std::string driver,card;
 	v4l2_capabilities_probe(device_fd,device_cap,driver,card);
 	type=DetectType(device_cap);

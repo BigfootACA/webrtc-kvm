@@ -8,6 +8,7 @@ webrtc_kvm_src += files([
 	'format.cpp',
 	'init.cpp',
 	'link.cpp',
+	'match.cpp',
 	'mmap.cpp',
 	'queue.cpp',
 	'uptr.cpp',

@@ -50,6 +50,8 @@ class V4L2Device:public Stream{
 		void SetupBuffer();
 		void FillBuffer(V4L2StreamBuffer*buffer);
 		void LoadGenericConfig(YAML::Node&cfg);
+		void LoadMatchConfig(YAML::Node&cfg);
+		void FindMatchDevice();
 		inline void OnBindInput(std::shared_ptr<StreamLink>link)override{OnBindLink(link,"input");}
 		inline void OnBindOutput(std::shared_ptr<StreamLink>link)override{OnBindLink(link,"output");}
 		void OnBindLink(std::shared_ptr<StreamLink>link,const std::string&type);
@@ -71,5 +73,9 @@ class V4L2Device:public Stream{
 		uint32_t buffer_cnt=3;
 		std::vector<V4L2StreamBuffer*>buffers;
 		std::unordered_map<uint32_t,int32_t>controls;
+		struct{
+			std::string driver;
+			std::string card;
+		}match={};
 };
 #endif
