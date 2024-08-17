@@ -11,11 +11,13 @@
 #include<string>
 #include"defines.h"
 #include"lib/exception.h"
+#include"lib/log.h"
 
 class UnitTest{
 	public:
 		void RegisterSelf();
 		virtual std::string GetName()=0;
+		virtual std::source_location GetLocation()=0;
 		virtual void RunTest()=0;
 };
 
@@ -23,7 +25,8 @@ class UnitTest{
 	class UnitTest##type:public UnitTest{\
 		public:\
 			inline UnitTest##type(){RegisterSelf();}\
-			std::string GetName()final{return __FILE__"@"#type;}\
+			std::string GetName()final{return log::relative_filename(GetLocation())+"@"#type;}\
+			std::source_location GetLocation()final{return std::source_location::current();}\
 			void RunTest()final;\
 	};\
 	cdecl_attr_used UnitTest##type UnitTestInstance##type;\
