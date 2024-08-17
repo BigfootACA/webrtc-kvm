@@ -23,9 +23,9 @@ static void handle_log(
 	va_list ap
 ){
 	char*buf=nullptr;
-	vasprintf(&buf,fm,ap);
+	auto len=vasprintf(&buf,fm,ap);
 	if(!buf)return;
-	log::print(log::LOG_INFO,buf);
+	if(len>0)log::print(log::LOG_INFO,std::string(buf,len));
 	free(buf);
 }
 
