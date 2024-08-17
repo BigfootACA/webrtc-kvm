@@ -27,7 +27,6 @@
 *.vmdk
 *.cpio
 *.cpio.*
-*.ttf
 *.ttc
 *.pcf
 *.pcf.*
