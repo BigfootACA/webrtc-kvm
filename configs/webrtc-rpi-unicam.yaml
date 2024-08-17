@@ -1,0 +1,86 @@
+##
+## Copyright (C) 2024 BigfootACA <bigfoot@classfun.cn>
+##
+## SPDX-License-Identifier: BSD-3-Clause
+##
+## Device:      Raspberry Pi 3B
+##   SoC:       Broadcom BCM2837
+##   CPU:       ARM Cortex-A53 @ 1.2GHz * 4
+##   Memory:    LPDDR2 1GiB
+##   Video Source:
+##     Capture:   Toshiba TC358743
+##     Interface: HDMI to MIPI-CSI
+##     Format:    1920x1080@50hz
+##     Fourcc:    UYVY (UYVY 4:2:2)
+##   Video Encoder:
+##     Format:    H.264
+##     Size:      1920x1080@50hz
+## OS:
+##   Distro: Arch Linux ARM
+##   Kernel: 6.6.41 (OEM)
+##
+
+# HTTP API Server
+http:
+  # HTTP server port
+  port: 2345
+
+# USB Gadget settings
+usb:
+  # USB Gadget ConfigFS Name
+  gadget: webrtc-kvm
+  # USB Vendor ID
+  id_vendor: 0x1D6B
+  # USB Product ID
+  id_product: 0x0104
+  # USB Manufacturer Name
+  manufacturer: ClassFun
+  # USB Product Name
+  product: WebRTC KVM
+
+# Video related settings
+video:
+  streams:
+    - id: hdmi-cap
+      name: HDMI Capture
+      driver: v4l2-cap
+      fourcc: UYVY
+
+      # TC358743 need a edid
+      # https://docs.pikvm.org/edid/
+      edid: /etc/webrtc-kvm/edid.bin
+
+      match:
+        driver: unicam
+        card: unicam
+
+    - id: h264-encoder
+      name: H.264 Encoder
+      driver: v4l2-m2m
+      buffers: 8
+      role: encoder
+      fourcc: H264
+
+      match:
+        driver: bcm2835-codec
+        card: bcm2835-codec-encode
+
+    - id: webrtc
+      name: WebRTC Streamer
+      driver: webrtc
+
+  links:
+    # From HDMI Capture to H.264 Encoder
+    - source: hdmi-cap
+      sink: h264-encoder
+      type: dmabuf
+
+    # From H.264 Encoder to WebRTC Streamer
+    - source: h264-encoder
+      sink: webrtc
+      type: pointer
+
+  auto_stop: true
+  width: 1920
+  height: 1080
+  fps: 50

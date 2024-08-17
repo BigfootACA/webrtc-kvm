@@ -152,3 +152,5 @@ All audio streaming are not implements now
 | Raspberry Pi 3B | Broadcom BCM2837  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
 | Raspberry Pi 4B | Broadcom BCM2711  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
 | Raspberry Pi 4B | Broadcom BCM2711  | MacroSilicon MS2130 | HDMI to USB 3.0   | 6.6.44           | H.264 1920x1080@60hz |
+
+Tested config files for devices: [configs](configs)

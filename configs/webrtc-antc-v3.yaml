@@ -1,0 +1,140 @@
+##
+## Copyright (C) 2024 BigfootACA <bigfoot@classfun.cn>
+##
+## SPDX-License-Identifier: BSD-3-Clause
+##
+## Device:      Ant-C v3 IP-KVM
+##   SoC:       Allwinner V3 (sun8i)
+##   CPU:       ARM Cortex-A7 @ 1.2GHz * 1
+##   Memory:    LPDDR3 256MiB
+##   Video Source:
+##     Capture:   ITE IT6616FN
+##     Interface: HDMI to MIPI-CSI
+##     Format:    1920x1080@60hz
+##     Fourcc:    NV12 (Y/UV 4:2:0)
+##   Video Encoder:
+##     Format:    H.264
+##     Size:      1920x1080@60hz
+## OS:
+##   Distro: AntOS (Buildroot)
+##     URL: https://github.com/BigfootACA/buildroot/tree/sun8i-v3
+##   Kernel: 6.6.2 (Mainline with modification)
+##     URL: https://github.com/BigfootACA/linux/tree/sun8i-v3-v6.6
+##
+
+# HTTP API Server
+http:
+  # HTTP server port
+  port: 2345
+  # HTTP Auth method (none, password, pam)
+  auth: pam
+  pam:
+    # PAM service
+    service: system-auth
+    # Allowed users
+    allowed:
+    - root
+    - antc
+    # Show username input box
+    username: yes
+    # Default username
+    default: antc
+
+# USB Gadget settings
+usb:
+  # USB Device Controller
+  udc: musb-hdrc.2.auto
+  # USB Gadget ConfigFS Name
+  gadget: webrtc-kvm
+  # USB Vendor ID
+  id_vendor: 0x1D6B
+  # USB Product ID
+  id_product: 0x0104
+  # USB Manufacturer Name
+  manufacturer: Ant-C
+  # USB Product Name
+  product: WebRTC KVM for AntOS
+
+# Video related settings
+video:
+  streams:
+    # Allwinner MIPI CSI / ISP with ITE IT6616FN
+    - id: hdmi-cap
+      name: HDMI Capture
+      driver: v4l2-cap
+
+      buffers: 3
+
+      # Multiple-plane NV12 (V4L2_PIX_FMT_NV12M)
+      fourcc: NM12
+
+      # setup formats for subdev
+      subdev: yes
+
+      # drivers/staging/media/sunxi/sun6i-isp
+      match:
+        driver: sun6i-isp
+        card: sun6i-isp-capture
+
+    # Allwinner Cedrus H.264 Video Encoder
+    - id: h264-encoder
+      name: H.264 Encoder
+      driver: v4l2-m2m
+
+      buffers: 3
+      role: encoder
+      fourcc: H264
+
+      # https://bootlin.com/blog/open-source-linux-kernel-support-for-the-allwinner-v3-v3s-s3-h-264-video-encoder/
+      match:
+        driver: cedrus
+        card: cedrus-enc
+
+      controls:
+        # V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR
+        0x990b84: 1
+        # V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP
+        0x990a5e: 24
+        # V4L2_CID_MPEG_VIDEO_H264_P_FRAME_QP
+        0x990a5f: 26
+        # V4L2_CID_MPEG_VIDEO_H264_LEVEL = V4L2_MPEG_VIDEO_H264_LEVEL_5_0
+        0x990a67: 14
+        # V4L2_CID_MPEG_VIDEO_H264_PROFILE = V4L2_MPEG_VIDEO_H264_PROFILE_CONSTRAINED_BASELINE
+        0x990a6b: 1
+        # V4L2_CID_MPEG_VIDEO_H264_ENTROPY_MODE = V4L2_MPEG_VIDEO_H264_ENTROPY_MODE_CAVLC
+        0x990a65: 0
+        # V4L2_CID_MPEG_VIDEO_H264_I_PERIOD
+        0x990a66: 1
+        # V4L2_CID_MPEG_VIDEO_GOP_CLOSURE
+        0x9909cc: 1
+
+    - id: webrtc
+      name: WebRTC Streamer
+      driver: webrtc
+
+  links:
+    # From HDMI Capture to H.264 Encoder
+    - source: hdmi-cap
+      sink: h264-encoder
+      type: dmabuf
+
+      # Encoder wants 1920x1080
+      size:
+      # NV12 chroma channel 1920*1080
+      - 2088960
+      # NV12 luma channel 1920*1080/2
+      - 1044480
+
+    # From H.264 Encoder to WebRTC Streamer
+    - source: h264-encoder
+      sink: webrtc
+      type: pointer
+
+      # Driver default size is too small
+      size:
+      - 1048576
+
+  auto_stop: true
+  width: 1920
+  height: 1080
+  fps: 60
