@@ -58,6 +58,7 @@ class V4L2Device:public Stream{
 		void LoadControlsConfig(YAML::Node&obj);
 		void FindMatchDevice();
 		void OnBindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir)override;
+		virtual void SetupDevice(){}
 		virtual v4l2_buf_type DetectType(uint32_t cap)=0;
 		bool use_dmabuf=false;
 		v4l2_buf_type type=(v4l2_buf_type)0;
