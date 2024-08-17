@@ -17,8 +17,12 @@ void InitializeGadget(webrtc_kvm*ctx){
 	gadget->gadget=std::make_shared<Gadget>(ctx->usb.name);
 	auto udc=gadget->gadget->GetUDC();
 	if(!udc.empty()){
-		ctx->usb.udc=udc;
-		log_info("found previous UDC {}",udc);
+		if(ctx->usb.udc.empty()){
+			ctx->usb.udc=udc;
+			log_info("found previous UDC {}",udc);
+		}else if(ctx->usb.udc!=udc)
+			log_info("disable old UDC {}",udc);
+		else log_info("stop running UDC {}",udc);
 		gadget->gadget->SetUDC("");
 	}
 	log_info(
