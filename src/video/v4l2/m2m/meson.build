@@ -3,7 +3,6 @@ webrtc_kvm_src += files([
 	'decoder.cpp',
 	'encoder.cpp',
 	'factory.cpp',
-	'h264.cpp',
 	'init.cpp',
 	'input.cpp',
 	'link.cpp',

@@ -55,17 +55,6 @@ video:
       # Video4Linux2 Memory-to-Memory encoder device
       device: /dev/video-enc0
       fourcc: H264
-      # H.264 Stream options
-      h264:
-        # Video profile
-        profile: baseline
-        # Quantizer Parameter (0-51)
-        qp_i: 24
-        qp_p: 26
-        # Group of Pictures closure
-        gop_closure: no
-        # Group of Pictures size (P-Frames count)
-        gop_size: 3
 
     - id: webrtc
       name: WebRTC Streamer
