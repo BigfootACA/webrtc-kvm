@@ -12,7 +12,7 @@
 void V4L2Capture::ProcessNextInput(V4L2StreamBuffer*in){
 	if(in->status!=STATUS_DEQUEUED)return;
 	StreamBuffer out={
-		.type=output->type,
+		.type=output->GetType(),
 		.planes_cnt=plane_count,
 		.timestamp=in->buffer.timestamp,
 	};
@@ -28,7 +28,7 @@ void V4L2Capture::ProcessNextInput(V4L2StreamBuffer*in){
 		v4l2_buffer_plane_length_used(in->buffer,i,val);
 		out.planes[i].used=val;
 	}
-	output->sink->ProcessInput(&out);
+	SendToNext(&out);
 	in->status=STATUS_IDLE;
 }
 
@@ -47,8 +47,6 @@ void V4L2Capture::OnProcessNeedQueue(){
 
 void V4L2Capture::OnProcessOutput(){
 	V4L2StreamBuffer*buffer=nullptr;
-	if(unlikely(!output||!output->sink))
-		throw InvalidArgument("no output link");
 	DequeueBuffer(&buffer);
 	ProcessNextInput(buffer);
 	QueueBuffer(buffer);
