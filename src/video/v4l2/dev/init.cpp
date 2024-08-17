@@ -24,6 +24,14 @@ void V4L2Device::OnDeinitialize(){
 		}
 		buffers.clear();
 	}
+	use_dmabuf=false;
+	frames=0,fps=0;
+	width=0,height=0;
+	buffer_cap=0,device_cap=0;
+	type=(v4l2_buf_type)0;
+	memset(size,0,sizeof(size));
+	memset(&format,0,sizeof(format));
+	plane_count=0;
 	if(open_device&&device_fd>=0){
 		close(device_fd);
 		device_fd=-1;

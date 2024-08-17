@@ -69,8 +69,8 @@ class V4L2Device:public Stream{
 		uint32_t plane_count=0;
 		uint32_t buffer_cap=0;
 		uint32_t device_cap=0;
-		uint32_t size[VIDEO_MAX_PLANES];
-		v4l2_format format;
+		uint32_t size[VIDEO_MAX_PLANES]={};
+		v4l2_format format{};
 		uint32_t buffer_cnt=3;
 		std::vector<V4L2StreamBuffer*>buffers;
 		std::unordered_map<uint32_t,int32_t>controls;
