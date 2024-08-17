@@ -49,4 +49,8 @@ extern std::vector<dev_t>DevicesFromSubsystem(const std::string&subsys);
 extern std::vector<dev_t>DevicesFromBus(const std::string&bus);
 extern std::string DeviceToString(dev_t d);
 extern int DeviceOpen(mode_t type,dev_t dev,int flags=O_RDWR|O_CLOEXEC);
+extern std::string NonEmpty(const std::string&str,const std::string&empty="(none)");
+extern std::string LinuxVersionToString(uint32_t ver);
+extern std::string CharPointerToString(const char*pointer,size_t size);
+#define CharArrayToString(_array) CharPointerToString(_array,sizeof(_array))
 #endif

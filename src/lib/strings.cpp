@@ -9,6 +9,7 @@
 #include<algorithm>
 #include<cstring>
 #include<string>
+#include<format>
 #include"strings.h"
 
 bool CheckValid(const char*val,const char*valids){
@@ -192,4 +193,23 @@ bool StringIsFalse(std::string str){
 	if(str=="disable")return true;
 	if(str=="disabled")return true;
 	return false;
+}
+
+std::string LinuxVersionToString(uint32_t ver){
+	return std::format(
+		"{}.{}.{}",
+		ver>>0x10&0xff,
+		ver>>0x08&0xff,
+		ver>>0x00&0xff
+	);
+}
+
+std::string CharPointerToString(const char*pointer,size_t size){
+	if(!pointer||size<=0)return "";
+	size_t len=strnlen(pointer,size);
+	return std::string(pointer,len);
+}
+
+std::string NonEmpty(const std::string&str,const std::string&empty){
+	return str.empty()?empty:str;
 }
