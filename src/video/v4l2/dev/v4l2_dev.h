@@ -55,6 +55,7 @@ class V4L2Device:public Stream{
 		void FillBuffer(V4L2StreamBuffer*buffer);
 		void LoadGenericConfig(YAML::Node&cfg);
 		void LoadMatchConfig(YAML::Node&cfg);
+		void LoadControlsConfig(YAML::Node&obj);
 		void FindMatchDevice();
 		void OnBindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir)override;
 		virtual v4l2_buf_type DetectType(uint32_t cap)=0;
