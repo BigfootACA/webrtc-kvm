@@ -10,7 +10,7 @@
 #include"lib/log.h"
 #include"lib/exception.h"
 
-std::string StreamLink::ToString(){
+std::string StreamLink::ToString()const{
 	return std::format(
 		"{} <=> {}",
 		source?source->GetID():"(null)",

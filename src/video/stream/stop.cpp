@@ -10,7 +10,7 @@
 #include"lib/log.h"
 
 void Stream::StopStream(bool all,bool deinit){
-	if(auto sink=GetOutputStream())if(sink->GetStatus()==STREAM_RUNNING){
+	if(output)if(auto sink=GetOutputStream())if(sink->GetStatus()==STREAM_RUNNING){
 		log_dbg(
 			"stop dependency sink stream {} requested by {}",
 			sink->GetID(),GetID()
@@ -50,7 +50,8 @@ void Stream::StopStream(bool all,bool deinit){
 		log_warn("stream {} does not stopped",GetID());
 		return;
 	}
-	if(all)if(auto src=GetInputStream()){
+	if(all&&input){
+		auto src=GetInputStream();
 		log_dbg(
 			"stop optional source stream {} requested by {}",
 			src->GetID(),GetID()

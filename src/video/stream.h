@@ -41,6 +41,12 @@ enum StreamPipeRole{
 	ROLE_CONVERTER,
 };
 
+enum StreamLinkDirection{
+	LINK_DIR_UNKNOWN,
+	LINK_DIR_IN,
+	LINK_DIR_OUT,
+};
+
 struct StreamBuffer{
 	BufferType type;
 	uint32_t planes_cnt;
@@ -55,10 +61,18 @@ struct StreamBuffer{
 };
 
 class StreamLink:public std::enable_shared_from_this<StreamLink>{
+	friend class Stream;
 	public:
 		StreamLink()=default;
 		void Initialize(StreamList*stream,YAML::Node&cfg);
 		void Initialize(Stream*source,Stream*sink,BufferType type=BUFFER_NULL);
+		static void CreateLinksFromConfig(StreamList*list,YAML::Node&cfg);
+		[[nodiscard]] inline uint32_t GetFourcc()const{return fourcc;}
+		[[nodiscard]] inline BufferType GetType()const{return type;}
+		[[nodiscard]] inline Stream*GetSource()const{return source;}
+		[[nodiscard]] inline Stream*GetSink()const{return sink;}
+		[[nodiscard]] virtual std::string ToString()const;
+	protected:
 		BufferType type=BUFFER_NULL;
 		uint32_t fourcc=0;
 		uint32_t planes_cnt=0;
@@ -67,44 +81,47 @@ class StreamLink:public std::enable_shared_from_this<StreamLink>{
 		}planes[8]={};
 		Stream*source=nullptr;
 		Stream*sink=nullptr;
-		static void CreateLinksFromConfig(StreamList*list,YAML::Node&cfg);
-		virtual std::string ToString();
 		void BindSource(Stream*stream);
 		void BindSink(Stream*stream);
-		inline Stream*GetSource(){return source;}
-		inline Stream*GetSink(){return sink;}
 };
 
 class Stream{
+	friend class StreamLink;
+	friend class StreamFactory;
 	public:
 		virtual ~Stream()=default;
-		void LoadConfig(YAML::Node&cfg);
-		void ProcessInput(StreamBuffer*buffer);
-		virtual std::string GetDriverName()=0;
-		virtual void OpenDevice();
-		inline UUID GetUUID(){return uuid;}
-		inline std::string GetID(){return id;}
-		inline std::string GetName(){return name;}
-		inline std::shared_ptr<StreamLink>GetInput(){return input;}
-		inline std::shared_ptr<StreamLink>GetOutput(){return output;}
-		inline Stream*GetInputStream(){return input?input->GetSource():nullptr;}
-		inline Stream*GetOutputStream(){return output?output->GetSink():nullptr;}
-		inline StreamStatus GetStatus(){return status;}
-		virtual StreamType GetType()=0;
+		[[nodiscard]] virtual std::string GetDriverName()const=0;
+		[[nodiscard]] inline UUID GetUUID()const{return uuid;}
+		[[nodiscard]] inline std::string GetID()const{return id;}
+		[[nodiscard]] inline std::string GetName()const{return name;}
+		[[nodiscard]] inline std::shared_ptr<StreamLink>GetInput(){return input;}
+		[[nodiscard]] inline std::shared_ptr<StreamLink>GetOutput(){return output;}
+		[[nodiscard]] inline StreamStatus GetStatus()const{return status;}
+		[[nodiscard]] virtual StreamType GetType()const=0;
+		[[nodiscard]] Stream*GetInputStream()const;
+		[[nodiscard]] Stream*GetOutputStream()const;
 		void StartStream(bool all=true);
 		void StopStream(bool all=true,bool deinit=true);
-		virtual uint32_t GetWidth()=0;
-		virtual uint32_t GetHeight()=0;
-		virtual uint32_t GetFrameRate()=0;
+		[[nodiscard]] virtual uint32_t GetWidth()const=0;
+		[[nodiscard]] virtual uint32_t GetHeight()const=0;
+		[[nodiscard]] virtual uint32_t GetFrameRate()const=0;
+	protected:
+		virtual void OpenDevice();
+		void LoadConfig(YAML::Node&cfg);
+		void SendToNext(StreamBuffer*buf);
+		void ProcessInput(StreamBuffer*buffer);
+		[[nodiscard]] size_t&OutputPlaneSize(uint32_t plane);
+		[[nodiscard]] size_t&InputPlaneSize(uint32_t plane);
+		[[nodiscard]] uint32_t&CurrentFourcc();
+		void BindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir);
 		virtual void OnStartStream()=0;
 		virtual void OnStopStream()=0;
 		virtual void OnInitialize()=0;
 		virtual void OnDeinitialize()=0;
-		inline virtual int GetFD(){return device_fd;}
+		[[nodiscard]] inline virtual int GetFD()const{return device_fd;}
 		inline virtual void OnLoadDeviceConfig(YAML::Node&cfg){}
 		inline virtual void OnProcessInput(StreamBuffer*buffer){}
-		inline virtual void OnBindInput(std::shared_ptr<StreamLink>link){}
-		inline virtual void OnBindOutput(std::shared_ptr<StreamLink>link){}
+		inline virtual void OnBindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir){}
 		inline virtual void OnProcessNeedQueue(){}
 		inline virtual void OnProcessOutput(){}
 		virtual void ProcessEvent(EventHandlerContext*ev);
@@ -112,11 +129,13 @@ class Stream{
 		virtual void DirectEnablePoll(int events=EPOLLIN);
 		virtual void DisablePoll();
 		virtual void DirectDisablePoll();
-		void TimestampFromFrames(timeval&tv,uint64_t frame);
+		void TimestampFromFrames(timeval&tv,uint64_t frame)const;
 		int device_fd=-1;
 		UUID poll_id;
 		std::string path;
 		uint32_t error=0;
+		uint32_t fourcc_in=0;
+		uint32_t fourcc_out=0;
 		bool open_device=true;
 		webrtc_kvm*ctx;
 		StreamPipeRole role=ROLE_NONE;
@@ -128,16 +147,18 @@ class Stream{
 
 class StreamFactory{
 	public:
-		void RegisterSelf();
-		void UnregisterSelf();
 		inline virtual ~StreamFactory(){UnregisterSelf();}
-		[[nodiscard]] virtual std::string GetDriverName()=0;
+		[[nodiscard]] virtual std::string GetDriverName()const=0;
 		[[nodiscard]] virtual Stream*Create(webrtc_kvm*ctx)=0;
 		[[nodiscard]] virtual Stream*CreateFromConfig(webrtc_kvm*ctx,YAML::Node&cfg);
-		static StreamFactory*GetFactoryByDriverName(const std::string&driver);
-		static Stream*CreateStreamByDriverName(webrtc_kvm*ctx,const std::string&driver);
-		static Stream*CreateStreamFromConfig(webrtc_kvm*ctx,YAML::Node&cfg);
+		[[nodiscard]] static StreamFactory*GetFactoryByDriverName(const std::string&driver);
+		[[nodiscard]] static Stream*CreateStreamByDriverName(webrtc_kvm*ctx,const std::string&driver);
+		[[nodiscard]] static Stream*CreateStreamFromConfig(webrtc_kvm*ctx,YAML::Node&cfg);
 		static void CreateStreamsFromConfig(webrtc_kvm*ctx,StreamList*list,YAML::Node&cfg);
+	protected:
+		void RegisterSelf();
+		void UnregisterSelf();
+	private:
 		std::string driver_name;
 		static struct StreamFactoryInfo*info;
 };
@@ -147,8 +168,9 @@ class StreamList{
 		virtual ~StreamList()=default;
 		void Add(Stream*stream);
 		void Remove(Stream*stream);
-		Stream*FindByUUID(const UUID&uuid);
-		Stream*FindByID(const std::string&id);
+		[[nodiscard]] Stream*FindByUUID(const UUID&uuid)const;
+		[[nodiscard]] Stream*FindByID(const std::string&id)const;
+	private:
 		std::map<UUID,Stream*>streams_by_uuid;
 		std::map<std::string,Stream*>streams_by_id;
 };

@@ -14,8 +14,8 @@ void StreamLink::Initialize(Stream*stream_source,Stream*stream_sink,BufferType b
 	BindSource(stream_source);
 	BindSink(stream_sink);
 	this->type=buff_type;
-	source->OnBindOutput(shared_from_this());
-	sink->OnBindInput(shared_from_this());
+	source->BindLink(shared_from_this(),LINK_DIR_OUT);
+	sink->BindLink(shared_from_this(),LINK_DIR_IN);
 }
 
 static bool StringToBufferType(const std::string&val,BufferType&type){

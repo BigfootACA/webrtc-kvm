@@ -11,7 +11,7 @@
 #include"lib/exception.h"
 
 void Stream::StartStream(bool all){
-	if(auto src=GetInputStream())if(src->GetStatus()!=STREAM_RUNNING){
+	if(input)if(auto src=GetInputStream())if(src->GetStatus()!=STREAM_RUNNING){
 		log_dbg(
 			"start dependency source stream {} requested by {}",
 			src->GetID(),GetID()
@@ -57,7 +57,8 @@ void Stream::StartStream(bool all){
 		log_warn("stream {} does not started",GetID());
 		return;
 	}
-	if(all)if(auto sink=GetOutputStream()){
+	if(all&&output){
+		auto sink=GetOutputStream();
 		log_dbg(
 			"start optional sink stream {} requested by {}",
 			sink->GetID(),GetID()

@@ -8,4 +8,5 @@ webrtc_kvm_src += files([
 	'start.cpp',
 	'stop.cpp',
 	'string.cpp',
+	'link.cpp',
 ])

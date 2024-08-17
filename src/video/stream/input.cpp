@@ -26,3 +26,10 @@ void Stream::ProcessInput(StreamBuffer*buffer){
 		}else error++;
 	}
 }
+
+void Stream::SendToNext(StreamBuffer*buf){
+	auto type=GetType();
+	if(unlikely(type!=STREAM_SOURCE&&type!=STREAM_PIPE))
+		throw InvalidArgument("cannot send stream when type is not source or pipe in {}",GetID());
+	GetOutputStream()->ProcessInput(buf);
+}
