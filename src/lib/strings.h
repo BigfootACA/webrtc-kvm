@@ -40,6 +40,8 @@ extern std::string DeviceGetUeventProperty(mode_t type,dev_t dev,const std::stri
 extern std::string PathFromDevice(mode_t type,dev_t dev);
 extern dev_t ParseDeviceMajorMinor(const std::string&mm);
 extern dev_t GetDeviceMajorMinor(const std::string&path);
+extern dev_t DeviceFromFD(int fd,mode_t type);
+extern dev_t DeviceFromPath(const std::string&path,mode_t type);
 extern std::string GetDeviceSubsystem(dev_t dev);
 extern std::vector<dev_t>DevicesFromDevicePath(const std::string&path,const std::string&subsys);
 extern std::vector<dev_t>DevicesFromFolder(const std::string&path);

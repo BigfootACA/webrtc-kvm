@@ -67,6 +67,24 @@ dev_t GetDeviceMajorMinor(const std::string&path){
 	return ParseDeviceMajorMinor(ReadFileString(std::format("{}/dev",path)));
 }
 
+dev_t DeviceFromFD(int fd,mode_t type){
+	struct stat st{};
+	if(::fstat(fd,&st)!=0)
+		throw ErrnoException("fstat {} failed",fd);
+	if((st.st_mode&S_IFMT)!=(type&S_IFMT))
+		throw InvalidArgument("fd {} is not a device",fd);
+	return st.st_rdev;
+}
+
+dev_t DeviceFromPath(const std::string&path,mode_t type){
+	struct stat st{};
+	if(::stat(path.c_str(),&st)!=0)
+		throw ErrnoException("stat {} failed",path);
+	if((st.st_mode&S_IFMT)!=(type&S_IFMT))
+		throw InvalidArgument("{} is not a device",path);
+	return st.st_rdev;
+}
+
 std::string GetDeviceSubsystem(dev_t dev){
 	return PathBaseName(PathReadLink(std::format(
 		"/sys/dev/char/{}:{}/subsystem",
