@@ -11,6 +11,7 @@
 
 void V4L2Device::SetupFormat(){
 	uint32_t l_width,l_height,l_fourcc;
+	auto fourcc=CurrentFourcc();
 	if(width==0)width=ctx->video.width;
 	if(height==0)height=ctx->video.height;
 	if(fps==0)fps=ctx->video.fps;
@@ -18,7 +19,7 @@ void V4L2Device::SetupFormat(){
 	format.type=type;
 
 	if(fourcc!=0&&!v4l2_pixel_format_check(device_fd,type,fourcc))
-		throw InvalidArgument("missing required output pixel format");
+		throw InvalidArgument("missing required pixel format");
 
 	/* Get initial info */
 	if(width==0||height==0||fourcc==0){
@@ -39,11 +40,11 @@ void V4L2Device::SetupFormat(){
 	for(uint32_t idx_plane=0;idx_plane<plane_count;idx_plane++){
 		uint32_t len=0;
 		v4l2_format_sizeimage(format,idx_plane,len);
-		if(input)len=MAX(len,input->planes[idx_plane].size);
-		if(output)len=MAX(len,output->planes[idx_plane].size);
+		if(input)len=MAX(len,InputPlaneSize(idx_plane));
+		if(output)len=MAX(len,OutputPlaneSize(idx_plane));
 		v4l2_format_setup_sizeimage(format,idx_plane,len);
-		if(input)input->planes[idx_plane].size=len;
-		if(output)output->planes[idx_plane].size=len;
+		if(input)InputPlaneSize(idx_plane)=len;
+		if(output)OutputPlaneSize(idx_plane)=len;
 		size[idx_plane]=len;
 	}
 	v4l2_format_pixel(format,width,height,l_fourcc);

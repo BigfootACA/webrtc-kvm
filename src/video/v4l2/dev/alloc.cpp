@@ -10,7 +10,7 @@
 
 void V4L2Device::InitializeBuffers(){
 	use_dmabuf=false;
-	if(output&&output->type==BUFFER_DMABUF)use_dmabuf=true;
+	if(output&&output->GetType()==BUFFER_DMABUF)use_dmabuf=true;
 	v4l2_create_buffers cb={.count=buffer_cnt,.memory=memory};
 	memcpy(&cb.format,&format,sizeof(cb.format));
 	for(uint32_t idx_plane=0;idx_plane<plane_count;idx_plane++)

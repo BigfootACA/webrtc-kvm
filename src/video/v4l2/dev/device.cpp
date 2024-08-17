@@ -18,6 +18,8 @@ void V4L2Device::InitializeDevice(){
 	std::string driver,card;
 	v4l2_capabilities_probe(device_fd,device_cap,driver,card);
 	type=DetectType(device_cap);
+	if(type==0)throw RuntimeError("no v4l2 type set for {}",GetID());
+	if(memory==0)throw RuntimeError("no v4l2 memory type set for {}",GetID());
 	v4l2_buffers_capabilities_probe(device_fd,type,memory,buffer_cap);
 	log_info("v4l2 {} using {} with driver {} card {}",GetID(),GetDriverName(),driver,card);
 	SetupFormat();

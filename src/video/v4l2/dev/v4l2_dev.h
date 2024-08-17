@@ -35,6 +35,10 @@ class V4L2StreamBuffer{
 class V4L2Device:public Stream{
 	public:
 		~V4L2Device()override=default;
+		[[nodiscard]] inline uint32_t GetWidth()const override{return width;}
+		[[nodiscard]] inline uint32_t GetHeight()const override{return height;}
+		[[nodiscard]] inline uint32_t GetFrameRate()const override{return fps;}
+	protected:
 		void OnStartStream()override{v4l2_stream_on(device_fd,type);}
 		void OnStopStream()override{v4l2_stream_off(device_fd,type);}
 		void OnDeinitialize()override;
@@ -52,18 +56,13 @@ class V4L2Device:public Stream{
 		void LoadGenericConfig(YAML::Node&cfg);
 		void LoadMatchConfig(YAML::Node&cfg);
 		void FindMatchDevice();
-		inline void OnBindInput(std::shared_ptr<StreamLink>link)override{OnBindLink(link,"input");}
-		inline void OnBindOutput(std::shared_ptr<StreamLink>link)override{OnBindLink(link,"output");}
-		void OnBindLink(std::shared_ptr<StreamLink>link,const std::string&type);
-		inline uint32_t GetWidth()override{return width;}
-		inline uint32_t GetHeight()override{return height;}
-		inline uint32_t GetFrameRate()override{return fps;}
+		void OnBindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir)override;
 		virtual v4l2_buf_type DetectType(uint32_t cap)=0;
 		bool use_dmabuf=false;
 		v4l2_buf_type type=(v4l2_buf_type)0;
 		v4l2_memory memory=(v4l2_memory)0;
 		uint64_t frames=0;
-		uint32_t fourcc=0,fps=0;
+		uint32_t fps=0;
 		uint32_t width=0,height=0;
 		uint32_t plane_count=0;
 		uint32_t buffer_cap=0;
