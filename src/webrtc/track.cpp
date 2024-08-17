@@ -45,10 +45,10 @@ void WebRTCInstance::VideoTrackInit(
 	const char*mid,const char*msid
 ){
 	rtcCodec codec;
-	fourccToCodec(codec,ep->fourcc);
+	fourccToCodec(codec,ep->fourcc_in);
 	log_info(
 		"webrtc {} create video track {} with payload {} ssrc {} mid {} msid {}",
-		uuid.ToString(),FourccToString(ep->fourcc),payload,ssrc,mid,msid
+		uuid.ToString(),FourccToString(ep->fourcc_in),payload,ssrc,mid,msid
 	);
 	auto desc=rtc::Description::Video(mid);
 	switch(codec){

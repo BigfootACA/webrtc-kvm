@@ -12,7 +12,7 @@ class WebRTCEndpointFactory:public StreamFactory{
 	public:
 		~WebRTCEndpointFactory()override=default;
 		inline WebRTCEndpointFactory(){RegisterSelf();}
-		[[nodiscard]] inline std::string GetDriverName()final{return "webrtc";}
+		[[nodiscard]] inline std::string GetDriverName()const final{return "webrtc";}
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 

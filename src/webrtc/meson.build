@@ -1,5 +1,4 @@
 webrtc_kvm_src += files([
-	'bind.cpp',
 	'datachannel.cpp',
 	'enable.cpp',
 	'endpoint.cpp',

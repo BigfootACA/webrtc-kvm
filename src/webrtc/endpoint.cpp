@@ -9,8 +9,8 @@
 #include"webrtc.h"
 
 void WebRTCEndpoint::ReportSize(){
+	if(!input)return;
 	auto src=GetInputStream();
-	if(!src)return;
 	auto width=src->GetWidth();
 	auto height=src->GetHeight();
 	auto fps=src->GetFrameRate();
@@ -21,11 +21,6 @@ void WebRTCEndpoint::ReportSize(){
 	event["height"]=height;
 	event["fps"]=fps;
 	SendEventAll(event);
-}
-
-Stream*WebRTCEndpoint::ParentStream(){
-	if(!input||!input->source)throw InvalidArgument("no input link");
-	return input->source;
 }
 
 void WebRTCEndpoint::OnInitialize(){

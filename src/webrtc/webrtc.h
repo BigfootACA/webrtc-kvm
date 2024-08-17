@@ -29,14 +29,16 @@ struct TrackInfo{
 };
 
 class WebRTCInstance{
+	friend class WebRTCEndpoint;
 	public:
 		WebRTCInstance();
 		~WebRTCInstance();
-		void Init();
-		std::string GetSDP()const;
+		[[nodiscard]] std::string GetSDP()const;
 		void SetSDP(const std::string&sdp);
-		void ProcessVideoStream(const Blob&data);
 		static void NewInstance(WebRTCEndpoint*ep,std::pair<UUID,WebRTCInstance*>&ins);
+	protected:
+		void Init();
+		void ProcessVideoStream(const Blob&data);
 		void VideoTrackInit(
 			TrackInfo&track,
 			int payload,int ssrc,
@@ -66,33 +68,32 @@ class WebRTCInstance{
 };
 
 class WebRTCEndpoint:public Stream{
+	friend class WebRTCInstance;
 	public:
 		inline explicit WebRTCEndpoint(webrtc_kvm*kvm):kvm(kvm){}
-		inline std::string GetDriverName()final{return "webrtc";}
-		inline StreamType GetType()override{return STREAM_SINK;}
+		[[nodiscard]] inline std::string GetDriverName()const final{return "webrtc";}
+		[[nodiscard]] inline StreamType GetType()const final{return STREAM_SINK;}
+		[[nodiscard]] inline uint32_t GetWidth()const final{return GetInputStream()->GetWidth();}
+		[[nodiscard]] inline uint32_t GetHeight()const final{return GetInputStream()->GetHeight();}
+		[[nodiscard]] inline uint32_t GetFrameRate()const final{return GetInputStream()->GetFrameRate();}
+		[[nodiscard]] WebRTCInstance*GetInstance(const UUID&uuid);
+		void NewInstance(std::pair<UUID,WebRTCInstance*>&ins);
+	protected:
 		void ReportSize();
 		void OnStartStream()final;
 		void OnStopStream()final;
 		void OnInitialize()final;
-		void OnBindInput(std::shared_ptr<StreamLink>link)final;
 		void OnDeinitialize()final;
 		void OnLoadDeviceConfig(YAML::Node&cfg)final;
 		void OnProcessInput(StreamBuffer*buffer)final;
-		WebRTCInstance*GetInstance(const UUID&uuid);
-		void NewInstance(std::pair<UUID,WebRTCInstance*>&ins);
 		void EnableStream(const UUID&uuid);
 		void DisableStream(const UUID&uuid);
 		void RemoveStream(const UUID&uuid);
 		void SendEventAll(Json::Value&node);
-		inline virtual uint32_t GetWidth()override{return ParentStream()->GetWidth();}
-		inline virtual uint32_t GetHeight()override{return ParentStream()->GetHeight();}
-		inline virtual uint32_t GetFrameRate()override{return ParentStream()->GetFrameRate();}
-		Stream*ParentStream();
 		std::map<UUID,WebRTCInstance*>instances;
 		std::vector<WebRTCInstance*>streaming;
 		std::mutex lock;
 		webrtc_kvm*kvm=nullptr;
-		uint32_t fourcc=0;
 		uint64_t frames=0;
 };
 #endif
