@@ -32,8 +32,11 @@ class V4L2Capture:public V4L2Device{
 		void OnProcessInput(StreamBuffer*buffer)final{}
 		void SetupDevice()final;
 		void SetupEdid();
+		void SetupSubdev();
 		v4l2_buf_type DetectType(uint32_t cap)final;
 		std::shared_ptr<Blob>edid=nullptr;
+		bool subdev=false;
+		uint32_t mbus_code=0;
 };
 class V4L2CaptureFactory:public StreamFactory{
 	public:

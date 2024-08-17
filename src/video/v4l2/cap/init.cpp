@@ -19,6 +19,7 @@ void V4L2Capture::OnDeinitialize(){
 
 void V4L2Capture::SetupDevice(){
 	if(edid)SetupEdid();
+	if(subdev)SetupSubdev();
 }
 
 v4l2_buf_type V4L2Capture::DetectType(uint32_t cap){
@@ -34,4 +35,6 @@ v4l2_buf_type V4L2Capture::DetectType(uint32_t cap){
 void V4L2Capture::OnLoadDeviceConfig(YAML::Node&cfg){
 	LoadGenericConfig(cfg);
 	LoadEdidConfig(cfg);
+	if(auto v=cfg["subdev"])subdev=v.as<bool>();
+	if(auto v=cfg["mbus_code"])mbus_code=v.as<uint32_t>();
 }
