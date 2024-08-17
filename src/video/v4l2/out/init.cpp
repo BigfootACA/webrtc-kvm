@@ -9,10 +9,10 @@
 #include"v4l2_out.h"
 
 void V4L2Output::OnInitialize(){
-	if(!input)throw InvalidArgument("no link");
-	if(width==0)width=input->source->GetWidth();
-	if(height==0)height=input->source->GetHeight();
-	if(fps==0)fps=input->source->GetFrameRate();
+	auto src=GetInputStream();
+	if(width==0)width=src->GetWidth();
+	if(height==0)height=src->GetHeight();
+	if(fps==0)fps=src->GetFrameRate();
 	InitializeDevice();
 }
 

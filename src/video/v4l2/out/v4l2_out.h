@@ -11,11 +11,13 @@
 #include"../dev/v4l2_dev.h"
 
 class V4L2Output:public V4L2Device{
+	friend class V4L2MemoryToMemory;
 	public:
 		~V4L2Output()override=default;
 		explicit V4L2Output(webrtc_kvm*ctx);
-		[[nodiscard]] inline std::string GetDriverName()override{return "v4l2-out";}
-		inline StreamType GetType()override{return STREAM_SINK;}
+		[[nodiscard]] inline std::string GetDriverName()const final{return "v4l2-out";}
+		[[nodiscard]] inline StreamType GetType()const final{return STREAM_SINK;}
+	protected:
 		void PrepareInput(StreamBuffer*input,V4L2StreamBuffer*buffer);
 		V4L2StreamBuffer*FindAvailableBuffer();
 		void QueueInput(StreamBuffer*input,V4L2StreamBuffer*buffer);
@@ -30,7 +32,7 @@ class V4L2OutputFactory:public StreamFactory{
 	public:
 		~V4L2OutputFactory()override=default;
 		inline V4L2OutputFactory(){RegisterSelf();}
-		[[nodiscard]] inline std::string GetDriverName()final{return "v4l2-out";}
+		[[nodiscard]] inline std::string GetDriverName()const final{return "v4l2-out";}
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
