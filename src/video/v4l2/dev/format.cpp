@@ -42,7 +42,6 @@ void V4L2Device::SetupFormat(){
 		v4l2_format_sizeimage(format,idx_plane,len);
 		if(input)len=MAX(len,InputPlaneSize(idx_plane));
 		if(output)len=MAX(len,OutputPlaneSize(idx_plane));
-		v4l2_format_setup_sizeimage(format,idx_plane,len);
 		if(input)InputPlaneSize(idx_plane)=len;
 		if(output)OutputPlaneSize(idx_plane)=len;
 		size[idx_plane]=len;
