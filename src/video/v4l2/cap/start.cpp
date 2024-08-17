@@ -14,6 +14,6 @@ void V4L2Capture::OnStartStream(){
 }
 
 void V4L2Capture::OnStopStream(){
-	DisablePoll();
+	DirectDisablePoll();
 	V4L2Device::OnStopStream();
 }

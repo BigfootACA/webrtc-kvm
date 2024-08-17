@@ -14,7 +14,7 @@ void V4L2MemoryToMemory::OnStartStream(){
 }
 
 void V4L2MemoryToMemory::OnStopStream(){
-	DisablePoll();
+	DirectDisablePoll();
 	v4l2_stream_off(device_fd,out->type);
 	v4l2_stream_off(device_fd,cap->type);
 }
