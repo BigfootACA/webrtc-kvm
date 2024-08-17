@@ -1,4 +1,5 @@
 webrtc_kvm_src += files([
+	'edid.cpp',
 	'factory.cpp',
 	'init.cpp',
 	'link.cpp',

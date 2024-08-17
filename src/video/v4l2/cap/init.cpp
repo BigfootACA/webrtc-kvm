@@ -17,6 +17,10 @@ void V4L2Capture::OnDeinitialize(){
 	V4L2Device::OnDeinitialize();
 }
 
+void V4L2Capture::SetupDevice(){
+	if(edid)SetupEdid();
+}
+
 v4l2_buf_type V4L2Capture::DetectType(uint32_t cap){
 	if(have_bit(device_cap,V4L2_CAP_VIDEO_M2M_MPLANE)||have_bit(device_cap,V4L2_CAP_VIDEO_CAPTURE_MPLANE)){
 		log_info("Capture using multiple plane API");
@@ -29,4 +33,5 @@ v4l2_buf_type V4L2Capture::DetectType(uint32_t cap){
 
 void V4L2Capture::OnLoadDeviceConfig(YAML::Node&cfg){
 	LoadGenericConfig(cfg);
+	LoadEdidConfig(cfg);
 }
