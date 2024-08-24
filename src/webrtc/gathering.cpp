@@ -8,17 +8,14 @@
 
 #include"webrtc.h"
 #include"lib/log.h"
+#include"string/strings.h"
 
 void WebRTCInstance::OnGatheringStateChange(rtc::PeerConnection::GatheringState p_state){
 	std::unique_lock<std::mutex>lk(lock);
-	const char*str;
-	switch(p_state){
-		case rtc::PeerConnection::GatheringState::New:str="new";break;
-		case rtc::PeerConnection::GatheringState::InProgress:str="inprogress";break;
-		case rtc::PeerConnection::GatheringState::Complete:str="complete";break;
-		default:str="unknown";break;
-	}
-	log_info("webrtc {} gathering state change to {}",uuid.ToString(),str);
+	log_info(
+		"webrtc {} gathering state change to {}",
+		uuid.ToString(),RTCPeerConnectionGatheringStateToString(p_state)
+	);
 	this->gathering_state=p_state;
 	if(p_state==rtc::PeerConnection::GatheringState::Complete){
 		auto lsdp=peer->localDescription();
