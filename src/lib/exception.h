@@ -56,6 +56,7 @@ namespace Exceptions{
 #ifndef BARE_EXCEPTIONS
 #define RuntimeError(...) Exceptions::RuntimeErrorImpl(std::format(__VA_ARGS__))
 #define InvalidArgument(...) Exceptions::InvalidArgumentImpl(std::format(__VA_ARGS__))
+#define ErrnoExceptionWith(err,...) Exceptions::ErrnoExceptionImpl(err,std::format(__VA_ARGS__))
 #define ErrnoException(...) Exceptions::ErrnoExceptionImpl(errno,std::format(__VA_ARGS__))
 #endif
 #endif
