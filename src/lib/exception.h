@@ -13,14 +13,14 @@
 #include<cstring>
 #include<source_location>
 namespace Exceptions{
-	class RuntimeError:public std::exception{
+	class RuntimeErrorImpl:public std::exception{
 		public:
-			inline RuntimeError()=default;
-			explicit RuntimeError(
+			inline RuntimeErrorImpl()=default;
+			explicit RuntimeErrorImpl(
 				const std::string&msg,
 				std::source_location c=std::source_location::current()
 			);
-			~RuntimeError()override=default;
+			~RuntimeErrorImpl()override=default;
 			[[nodiscard]] inline const char*what()const noexcept override{return msg.c_str();}
 			inline std::string GetMessage(){return msg;}
 			inline std::string GetOriginal(){return original;}
@@ -31,29 +31,30 @@ namespace Exceptions{
 			std::string original;
 			std::string msg;
 	};
-	class InvalidArgument:public RuntimeError{
+	class InvalidArgumentImpl:public RuntimeErrorImpl{
 		public:
-			inline InvalidArgument()=default;
-			explicit InvalidArgument(
+			inline InvalidArgumentImpl()=default;
+			explicit InvalidArgumentImpl(
 				const std::string&msg,
 				std::source_location c=std::source_location::current()
 			);
-			virtual ~InvalidArgument()=default;
+			virtual ~InvalidArgumentImpl()=default;
 	};
-	class ErrnoException:public RuntimeError{
+	class ErrnoExceptionImpl:public RuntimeErrorImpl{
 		public:
-			inline ErrnoException()=default;
-			explicit ErrnoException(
+			inline ErrnoExceptionImpl()=default;
+			explicit ErrnoExceptionImpl(
+				int err,
 				const std::string&msg,
 				std::source_location c=std::source_location::current()
 			);
-			virtual ~ErrnoException()=default;
+			virtual ~ErrnoExceptionImpl()=default;
 			int err=0;
 	};
 }
 #ifndef BARE_EXCEPTIONS
-#define RuntimeError(...) Exceptions::RuntimeError(std::format(__VA_ARGS__))
-#define InvalidArgument(...) Exceptions::InvalidArgument(std::format(__VA_ARGS__))
-#define ErrnoException(...) Exceptions::ErrnoException(std::format(__VA_ARGS__))
+#define RuntimeError(...) Exceptions::RuntimeErrorImpl(std::format(__VA_ARGS__))
+#define InvalidArgument(...) Exceptions::InvalidArgumentImpl(std::format(__VA_ARGS__))
+#define ErrnoException(...) Exceptions::ErrnoExceptionImpl(errno,std::format(__VA_ARGS__))
 #endif
 #endif

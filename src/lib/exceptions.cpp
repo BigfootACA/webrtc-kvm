@@ -12,7 +12,7 @@
 #include"log.h"
 #include"exception.h"
 
-Exceptions::RuntimeError::RuntimeError(const std::string&msg,std::source_location c){
+Exceptions::RuntimeErrorImpl::RuntimeErrorImpl(const std::string&msg,std::source_location c){
 	this->location=c;
 	this->original=msg;
 	this->msg=std::format(
@@ -21,7 +21,7 @@ Exceptions::RuntimeError::RuntimeError(const std::string&msg,std::source_locatio
 	);
 }
 
-Exceptions::InvalidArgument::InvalidArgument(const std::string&msg,std::source_location c){
+Exceptions::InvalidArgumentImpl::InvalidArgumentImpl(const std::string&msg,std::source_location c){
 	this->location=c;
 	this->original=msg;
 	this->msg=std::format(
@@ -30,16 +30,16 @@ Exceptions::InvalidArgument::InvalidArgument(const std::string&msg,std::source_l
 	);
 }
 
-Exceptions::ErrnoException::ErrnoException(const std::string&msg,std::source_location c){
+Exceptions::ErrnoExceptionImpl::ErrnoExceptionImpl(int err,const std::string&msg,std::source_location c){
 	this->location=c;
 	this->original=msg;
 	this->msg=std::format(
 		"{} at {}:{}",
 		msg,log::relative_filename(c),c.line()
 	);
-	if(errno!=0){
-		err=errno;
+	if(err!=0){
+		this->err=err;
 		if(!this->msg.empty())this->msg+=": ";
-		this->msg+=strerror(errno);
+		this->msg+=strerror(err);
 	}
 }
