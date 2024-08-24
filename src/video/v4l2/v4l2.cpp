@@ -34,7 +34,7 @@ bool v4l2_pixel_format_check(int video_fd,uint32_t type,uint32_t pixel_format){
 		xioctl(video_fd,VIDIOC_ENUM_FMT,&fmtdesc);
 		if(fmtdesc.pixelformat==pixel_format)return true;
 		index++;
-	}catch(Exceptions::ErrnoException&exc){
+	}catch(Exceptions::ErrnoExceptionImpl&exc){
 		if(exc.err==EAGAIN)continue;
 		break;
 	}

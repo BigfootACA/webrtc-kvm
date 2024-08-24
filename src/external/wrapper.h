@@ -48,7 +48,7 @@
 		);\
 	}
 namespace Exceptions{
-	class LibraryError:public Exceptions::RuntimeError{
+	class LibraryError:public Exceptions::RuntimeErrorImpl{
 		public:
 			inline LibraryError()=default;
 			explicit LibraryError(

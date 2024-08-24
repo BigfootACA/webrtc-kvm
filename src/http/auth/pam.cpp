@@ -69,7 +69,7 @@ void HttpAuthorization::AuthPAM(const AuthRequest&req){
 	try{
 		if((ret=pam_start(pam.service.c_str(),req.username.c_str(),&conv,&pamh))!=PAM_SUCCESS)
 			throw RuntimeError("pam_start failed: {}",PAMErrorToString(ret));
-	}catch(Exceptions::RuntimeError&exc){
+	}catch(Exceptions::RuntimeErrorImpl&exc){
 		res_rel.Take();
 		resp_rel.Take();
 		log_err("failed to initialize pam: {}",exc.what());

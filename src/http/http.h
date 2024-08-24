@@ -273,7 +273,7 @@ extern std::string FileNameToMime(const std::string&name);
 	cdecl_attr_used HttpStaticListHandler builtin_handler_##id(path,name##_file_list);
 
 namespace Exceptions{
-	class HttpError:public RuntimeError{
+	class HttpError:public RuntimeErrorImpl{
 		public:
 			inline HttpError()=default;
 			explicit HttpError(

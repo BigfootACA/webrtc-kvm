@@ -66,7 +66,7 @@ std::vector<std::shared_ptr<MediaEntityDesc>>MediaDevice::EnumEntities(){
 		xioctl(fd,MEDIA_IOC_ENUM_ENTITIES,&desc);
 		auto d=std::make_shared<MediaEntityDesc>(self,desc);
 		ret.push_back(d);
-	}catch(Exceptions::ErrnoException&exc){
+	}catch(Exceptions::ErrnoExceptionImpl&exc){
 		if(exc.err==EINVAL)break;
 		throw;
 	}
@@ -81,7 +81,7 @@ std::shared_ptr<MediaEntityDesc>MediaDevice::EnumEntity(uint32_t id){
 		xioctl(fd,MEDIA_IOC_ENUM_ENTITIES,&desc);
 		auto d=std::make_shared<MediaEntityDesc>(self,desc);
 		return d;
-	}catch(Exceptions::ErrnoException&exc){
+	}catch(Exceptions::ErrnoExceptionImpl&exc){
 		if(exc.err==EINVAL)return nullptr;
 		throw;
 	}
