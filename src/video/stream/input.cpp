@@ -17,8 +17,7 @@ void Stream::ProcessInput(StreamBuffer*buffer){
 		OnProcessInput(buffer);
 		error/=2;
 	}catch(std::exception&exc){
-		if(auto err=dynamic_cast<Exceptions::ErrnoException*>(&exc))
-			if(err->err==EAGAIN)return;
+		if(Exceptions::ErrnoExceptionImpl::IsErrno(exc,EAGAIN))return;
 		log_warn("stream {} process input failed: {}",GetID(),exc.what());
 		if(error>=ERROR_MAX){
 			log_warn("too many error in {}, stop it...",GetID());

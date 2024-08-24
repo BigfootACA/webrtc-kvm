@@ -64,8 +64,7 @@ void EventLoop::LockedProcessEvent(epoll_event*ev){
 		CallHandler(data,TYPE_EVENTS,ev);
 		data->error/=2;
 	}catch(std::exception&exc){
-		if(auto err=dynamic_cast<Exceptions::ErrnoException*>(&exc))
-			if(err->err==EAGAIN)return;
+		if(Exceptions::ErrnoExceptionImpl::IsErrno(exc,EAGAIN))return;
 		log_warn("error while process fd {}: {}",data->fd,exc.what());
 		auto type=TYPE_ERROR;
 		data->error++;
