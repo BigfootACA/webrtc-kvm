@@ -43,3 +43,9 @@ Exceptions::ErrnoExceptionImpl::ErrnoExceptionImpl(int err,const std::string&msg
 		this->msg+=strerror(err);
 	}
 }
+
+bool Exceptions::ErrnoExceptionImpl::IsErrno(std::exception&exc,int err){
+	if(auto e=dynamic_cast<Exceptions::ErrnoExceptionImpl*>(&exc))
+		if(e->err==err)return true;
+	return false;
+}

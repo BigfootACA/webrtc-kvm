@@ -50,6 +50,7 @@ namespace Exceptions{
 			);
 			virtual ~ErrnoExceptionImpl()=default;
 			int err=0;
+			static bool IsErrno(std::exception&exc,int err);
 	};
 }
 #ifndef BARE_EXCEPTIONS
