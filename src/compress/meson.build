@@ -1,13 +1,13 @@
-webrtc_kvm_src += files(['compress.cpp'])
+webrtc_kvm_src_compress = files(['compress.cpp'])
 if zlib.found()
-	webrtc_kvm_src += files(['zlib.cpp'])
+	webrtc_kvm_src_compress += files(['zlib.cpp'])
 endif
 if libzstd.found()
-	webrtc_kvm_src += files(['zstd.cpp'])
+	webrtc_kvm_src_compress += files(['zstd.cpp'])
 endif
 if libbrotlidec.found() and libbrotlienc.found()
-	webrtc_kvm_src += files(['brotli.cpp'])
+	webrtc_kvm_src_compress += files(['brotli.cpp'])
 endif
 if bzip2.found()
-	webrtc_kvm_src += files(['bzip2.cpp'])
+	webrtc_kvm_src_compress += files(['bzip2.cpp'])
 endif

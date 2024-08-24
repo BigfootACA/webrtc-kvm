@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_video_v4l2_dev = files([
 	'alloc.cpp',
 	'buffer.cpp',
 	'config.cpp',

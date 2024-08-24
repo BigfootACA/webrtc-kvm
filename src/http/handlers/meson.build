@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_http_handlers = files([
 	'auth_check.cpp',
 	'auth_info.cpp',
 	'auth_login.cpp',

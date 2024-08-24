@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_http_core = files([
 	'compress.cpp',
 	'connection.cpp',
 	'exceptions.cpp',

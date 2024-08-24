@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_string = files([
 	'fourcc.cpp',
 	'h264_level.cpp',
 	'h264_profile.cpp',

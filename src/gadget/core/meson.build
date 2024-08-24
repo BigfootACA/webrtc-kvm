@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_gadget_core = files([
 	'string.cpp',
 	'gadget.cpp',
 	'config.cpp',

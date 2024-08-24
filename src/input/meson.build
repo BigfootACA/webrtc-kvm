@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_input = files([
 	'string.cpp',
 	'web_key_map.cpp',
 	'hid.cpp',

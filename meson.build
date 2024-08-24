@@ -20,6 +20,9 @@ if static_link
 endif
 prog_python = find_program('python3')
 
+inc = [
+    include_directories('src')
+]
 add_project_arguments(['-include','global.h'], language: 'c')
 add_project_arguments(['-include','global.h','-Wno-psabi'], language: 'cpp')
 
@@ -59,7 +62,7 @@ configure_file(
 
 install_data(
     'assets/config.yaml',
-    install_mode: 'rwxr-xr-x',
+    install_mode: 'rw-r--r--',
     install_dir: get_option('sysconfdir') / 'webrtc-kvm',
 )
 
@@ -96,7 +99,7 @@ webrtc_kvm = executable(
     link_args: link_args,
     link_language: 'cpp',
     install: true,
-    include_directories: include_directories('src'),
+    include_directories: inc,
 )
 
 test('webrtc-kvm test', webrtc_kvm, args : ['-T'])

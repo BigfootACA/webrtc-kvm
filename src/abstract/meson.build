@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_abstract = files([
 	'async-runner.cpp',
 	'buffer-queue.cpp',
 	'buffer.cpp',

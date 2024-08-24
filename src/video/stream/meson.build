@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_video_stream = files([
 	'config.cpp',
 	'device.cpp',
 	'event.cpp',

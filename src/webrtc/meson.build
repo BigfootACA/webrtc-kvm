@@ -1,4 +1,4 @@
-webrtc_kvm_src += files([
+webrtc_kvm_src_webrtc = files([
 	'datachannel.cpp',
 	'enable.cpp',
 	'endpoint.cpp',
