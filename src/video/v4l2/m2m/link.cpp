@@ -19,7 +19,7 @@ void V4L2MemoryToMemory::OnBindLink(
 		break;
 		case LINK_DIR_OUT:
 			cap->BindLink(link,dir);
-			cap->output=link;
+			cap->outputs.push_back(link);
 		break;
 		default:;
 	}

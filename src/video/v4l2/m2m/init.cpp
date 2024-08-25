@@ -9,7 +9,7 @@
 #include"v4l2_m2m.h"
 
 void V4L2MemoryToMemory::OnInitialize(){
-	if(!input||!output)throw InvalidArgument("no link");
+	if(!input||outputs.empty())throw InvalidArgument("no link");
 	if(path.empty())FindMatchDevice();
 	OpenDevice();
 	cap->device_fd=device_fd,out->device_fd=device_fd;

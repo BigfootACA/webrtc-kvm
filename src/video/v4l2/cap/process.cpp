@@ -12,7 +12,7 @@
 void V4L2Capture::ProcessNextInput(V4L2StreamBuffer*in){
 	if(in->status!=STATUS_DEQUEUED)return;
 	StreamBuffer out={
-		.type=output->GetType(),
+		.type=GetOutput()->GetType(),
 		.planes_cnt=plane_count,
 		.timestamp=in->buffer.timestamp,
 	};

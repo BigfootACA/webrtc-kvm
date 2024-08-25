@@ -9,7 +9,7 @@
 #include"v4l2_cap.h"
 
 void V4L2Capture::OnInitialize(){
-	if(!output)throw InvalidArgument("no link");
+	if(outputs.empty())throw InvalidArgument("no link");
 	InitializeDevice();
 }
 

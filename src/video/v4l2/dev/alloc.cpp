@@ -10,7 +10,7 @@
 
 void V4L2Device::InitializeBuffers(){
 	use_dmabuf=false;
-	if(output&&output->GetType()==BUFFER_DMABUF)use_dmabuf=true;
+	if(!outputs.empty()&&GetOutput()->GetType()==BUFFER_DMABUF)use_dmabuf=true;
 	bool diff_size=false;
 	if(v4l2_type_mplane_check(type)){
 		auto&fmt=format.fmt.pix_mp.plane_fmt;
