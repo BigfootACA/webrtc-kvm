@@ -1,0 +1,115 @@
+##
+## Copyright (C) 2024 BigfootACA <bigfoot@classfun.cn>
+##
+## SPDX-License-Identifier: BSD-3-Clause
+##
+## Device:      Rockchip RK3588 EVB
+##   SoC:       Rockchip RK3588
+##   CPU:       ARM Cortex-A76 @ 2.35GHz * 4 + ARM Cortex-A55 @ 1.8GHz * 4
+##   Memory:    LPDDR4 8GiB
+##   Video Source:
+##     Capture:   Rockchip RK3588 HDMI-RX
+##     Interface: HDMI
+##     Format:    1920x1080@60hz
+##     Fourcc:    BGR3 (24-bit BGR 8-8-8)
+##   Video Encoder:
+##     Format:    H.264
+##     Size:      1920x1080@60hz
+## OS:
+##   Distro: Ubuntu LTS 24.04
+##   Kernel: 5.10.66 (OEM)
+##
+
+# HTTP API Server
+http:
+  # HTTP server port
+  port: 2345
+
+# USB Gadget settings
+usb:
+  # USB Device Controller
+  udc: fc000000.usb
+  # USB Gadget ConfigFS Name
+  gadget: webrtc-kvm
+  # USB Vendor ID
+  id_vendor: 0x1D6B
+  # USB Product ID
+  id_product: 0x0104
+  # USB Manufacturer Name
+  manufacturer: ClassFun
+  # USB Product Name
+  product: WebRTC KVM
+
+# Video related settings
+video:
+  streams:
+    - id: hdmi-cap
+      name: HDMI Capture
+      driver: v4l2-cap
+      fourcc: BGR3
+
+      match:
+        driver: rk_hdmirx
+        card: rk_hdmirx
+
+    - id: h264-encoder
+      name: H.264 Encoder
+      driver: rkmpp
+      role: encoder
+      fourcc: H264
+
+      config:
+        s32:base:low_delay: 1
+        s32:rc:mode: 0
+        s32:rc:drop_mode: 0
+        s32:rc:drop_thd: 20
+        s32:rc:drop_gap: 1
+        # Target bitrate: 15 Mbit
+        s32:rc:bps_target: 10000000
+        # Max bitrate: 25 Mbit
+        s32:rc:bps_max: 15000000
+        # Min bitrate: 5 Mbit
+        s32:rc:bps_min: 5000000
+        s32:rc:qp_init: -1
+        s32:rc:qp_max: 51
+        s32:rc:qp_min: 10
+        s32:rc:qp_max_i: 51
+        s32:rc:qp_min_i: 10
+        s32:rc:qp_ip: 2
+        s32:rc:fqp_min_i: 10
+        s32:rc:fqp_max_i: 51
+        s32:rc:fqp_min_p: 10
+        s32:rc:fqp_max_p: 51
+        # 0: Annex-B, 1: AVCC
+        s32:h264:stream_type: 1
+        # H264_PROFILE_BASELINE
+        s32:h264:profile: 66
+        # H264_LEVEL_5_2 (4K@60fps)
+        s32:h264:level: 52
+        s32:h264:cabac_en: 0
+        s32:h264:cabac_idc: -1
+        s32:h264:trans8x8: 0
+        s32:prep:mirroring: 0
+        s32:prep:rotation: 0
+        s32:prep:flip: 0
+        s32:rc:gop: 3
+
+    - id: webrtc
+      name: WebRTC Streamer
+      driver: webrtc
+
+  links:
+    # From HDMI Capture to H.264 Encoder
+    - source: hdmi-cap
+      sink: h264-encoder
+      type: dmabuf
+
+    # From H.264 Encoder to WebRTC Streamer
+    - source: h264-encoder
+      sink: webrtc
+      type: pointer
+
+  auto_stop: true
+  width: 1920
+  height: 1080
+  fps: 60
