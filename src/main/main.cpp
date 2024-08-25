@@ -75,8 +75,8 @@ int main(int argc,char**argv){
 	}
 	signal(SIGINT,HandInterrupt);
 	signal(SIGHUP,HandInterrupt);
-	signal(SIGPIPE,HandInterrupt);
 	signal(SIGTERM,HandInterrupt);
+	signal(SIGPIPE,SIG_IGN);
 	auto runner=AsyncRunner::GetDefault();
 	while(likely(ctx.running)){
 		ctx.loop->RunOnceLoop(1000);
