@@ -13,12 +13,8 @@ void StreamLink::BindSource(Stream*stream){
 	if(!stream)throw InvalidArgument("bad source to bind");
 	if(source==stream)return;
 	if(source)throw InvalidArgument("link already bound");
-	if(stream->output)throw InvalidArgument(
-		"source {} already bound to another link",
-		stream->GetID()
-	);
 	source=stream;
-	source->output=shared_from_this();
+	source->outputs.push_back(shared_from_this());
 }
 
 void StreamLink::BindSink(Stream*stream){

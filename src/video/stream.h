@@ -94,12 +94,12 @@ class Stream{
 		[[nodiscard]] inline UUID GetUUID()const{return uuid;}
 		[[nodiscard]] inline std::string GetID()const{return id;}
 		[[nodiscard]] inline std::string GetName()const{return name;}
-		[[nodiscard]] inline std::shared_ptr<StreamLink>GetInput(){return input;}
-		[[nodiscard]] inline std::shared_ptr<StreamLink>GetOutput(){return output;}
+		[[nodiscard]] inline std::shared_ptr<StreamLink>GetInput()const{return input;}
+		[[nodiscard]] std::shared_ptr<StreamLink>GetOutput(size_t id=0)const;
 		[[nodiscard]] inline StreamStatus GetStatus()const{return status;}
 		[[nodiscard]] virtual StreamType GetType()const=0;
 		[[nodiscard]] Stream*GetInputStream()const;
-		[[nodiscard]] Stream*GetOutputStream()const;
+		[[nodiscard]] Stream*GetOutputStream(size_t id=0)const;
 		void StartStream(bool all=true);
 		void StopStream(bool all=true,bool deinit=true);
 		[[nodiscard]] virtual uint32_t GetWidth()const=0;
@@ -110,7 +110,7 @@ class Stream{
 		void LoadConfig(YAML::Node&cfg);
 		void SendToNext(StreamBuffer*buf);
 		void ProcessInput(StreamBuffer*buffer);
-		[[nodiscard]] size_t&OutputPlaneSize(uint32_t plane);
+		[[nodiscard]] size_t&OutputPlaneSize(size_t id,uint32_t plane);
 		[[nodiscard]] size_t&InputPlaneSize(uint32_t plane);
 		[[nodiscard]] uint32_t&CurrentFourcc();
 		void BindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir);
@@ -140,7 +140,8 @@ class Stream{
 		webrtc_kvm*ctx;
 		StreamPipeRole role=ROLE_NONE;
 		StreamStatus status=STREAM_UNINITIALIZE;
-		std::shared_ptr<StreamLink>input,output;
+		std::shared_ptr<StreamLink>input;
+		std::vector<std::shared_ptr<StreamLink>>outputs;
 		std::string name,id;
 		UUID uuid;
 };

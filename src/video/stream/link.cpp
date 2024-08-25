@@ -33,7 +33,8 @@ void Stream::BindLink(std::shared_ptr<StreamLink>link,StreamLinkDirection dir){
 	OnBindLink(link,dir);
 }
 
-size_t&Stream::OutputPlaneSize(uint32_t plane){
+size_t&Stream::OutputPlaneSize(size_t id,uint32_t plane){
+	auto output=GetOutput(id);
 	if(!output)throw InvalidArgument("no output link");
 	if(plane>=ARRAY_SIZE(output->planes))
 		throw InvalidArgument("plane index out of range");
@@ -47,7 +48,6 @@ size_t&Stream::InputPlaneSize(uint32_t plane){
 	return input->planes[plane].size;
 }
 
-
 Stream*Stream::GetInputStream()const{
 	if(unlikely(!input))throw InvalidArgument("no input link");
 	auto source=input->GetSource();
@@ -55,9 +55,15 @@ Stream*Stream::GetInputStream()const{
 	return source;
 }
 
-Stream*Stream::GetOutputStream()const{
+Stream*Stream::GetOutputStream(size_t id)const{
+	auto output=GetOutput(id);
 	if(unlikely(!output))throw InvalidArgument("no output link");
 	auto sink=output->GetSink();
 	if(unlikely(!sink))throw InvalidArgument("no sink stream in output link");
 	return sink;
+}
+
+std::shared_ptr<StreamLink>Stream::GetOutput(size_t id)const{
+	if(id>=outputs.size())return nullptr;
+	return outputs[id];
 }

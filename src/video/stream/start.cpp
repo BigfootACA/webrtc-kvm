@@ -28,8 +28,8 @@ void Stream::StartStream(bool all){
 	if(status==STREAM_UNINITIALIZE)try{
 		log_dbg("initializing stream {}",GetID());
 		switch(GetType()){
-			case STREAM_SOURCE:if(!output)throw InvalidArgument("no output for stream source");break;
-			case STREAM_PIPE:if(!input||!output)throw InvalidArgument("no input or output for stream pipe");break;
+			case STREAM_SOURCE:if(outputs.empty())throw InvalidArgument("no output for stream source");break;
+			case STREAM_PIPE:if(!input||outputs.empty())throw InvalidArgument("no input or output for stream pipe");break;
 			case STREAM_SINK:if(!input)throw InvalidArgument("no input for stream sink");break;
 			default:throw InvalidArgument("unknown stream type");
 		}
@@ -57,8 +57,9 @@ void Stream::StartStream(bool all){
 		log_warn("stream {} does not started",GetID());
 		return;
 	}
-	if(all&&output){
-		auto sink=GetOutputStream();
+	if(all&&!outputs.empty())for(auto output:outputs){
+		auto sink=output->GetSink();
+		if(!sink)continue;
 		log_dbg(
 			"start optional sink stream {} requested by {}",
 			sink->GetID(),GetID()

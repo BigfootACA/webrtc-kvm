@@ -30,5 +30,12 @@ void Stream::SendToNext(StreamBuffer*buf){
 	auto type=GetType();
 	if(unlikely(type!=STREAM_SOURCE&&type!=STREAM_PIPE))
 		throw InvalidArgument("cannot send stream when type is not source or pipe in {}",GetID());
-	GetOutputStream()->ProcessInput(buf);
+	bool sent=false;
+	for(auto output:outputs){
+		auto sink=output->GetSink();
+		if(unlikely(!sink))continue;
+		sink->ProcessInput(buf);
+		sent=true;
+	}
+	if(unlikely(!sent))throw RuntimeError("no any output to send stream");
 }

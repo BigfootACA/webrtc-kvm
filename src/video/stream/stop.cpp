@@ -10,7 +10,9 @@
 #include"lib/log.h"
 
 void Stream::StopStream(bool all,bool deinit){
-	if(output)if(auto sink=GetOutputStream())if(sink->GetStatus()==STREAM_RUNNING){
+	if(!outputs.empty())for(auto output:outputs){
+		auto sink=GetOutputStream();
+		if(!sink||sink->GetStatus()!=STREAM_RUNNING)continue;
 		log_dbg(
 			"stop dependency sink stream {} requested by {}",
 			sink->GetID(),GetID()

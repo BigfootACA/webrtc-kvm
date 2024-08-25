@@ -11,6 +11,19 @@
 #include"config/configs.h"
 
 void StreamLink::Initialize(Stream*stream_source,Stream*stream_sink,BufferType buff_type){
+	if(!stream_source||!stream_sink)
+		throw InvalidArgument("bad stream source or sink");
+	uint32_t fourcc_temp=0;
+	auto id=stream_sink->GetID();
+	for(auto output:stream_source->outputs){
+		if(output->GetSink()==stream_sink)
+			throw InvalidArgument("sink {} already bound",id);
+		if(output->type!=0&&output->type!=buff_type)
+			throw InvalidArgument("sink {} link type mismatch",id);
+		if(output->fourcc!=0&&fourcc_temp!=0&&output->fourcc!=fourcc_temp)
+			throw InvalidArgument("sink {} link fourcc mismatch",id);
+		fourcc_temp=output->fourcc;
+	}
 	BindSource(stream_source);
 	BindSink(stream_sink);
 	this->type=buff_type;
