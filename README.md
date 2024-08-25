@@ -120,7 +120,7 @@ All audio streaming are not implements now
 | VA-API                         | ⛔ TODO     |
 | VDPAU                          | ⛔ TODO     |
 | CedarX (Allwinner)             | ⛔ TODO     |
-| RKMPP (Rockchip)               | ⛔ TODO     |
+| RKMPP (Rockchip)               | ✅ WORKS    |
 
 #### Keyboard and Mouse
 

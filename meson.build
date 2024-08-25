@@ -39,6 +39,8 @@ libbrotlienc = dependency('libbrotlienc', required: false, static: static_link)
 bzip2 = dependency('bzip2', required: false, static: static_link)
 pam = dependency('pam', required: false, static: static_link)
 x264 = dependency('x264', required: false, static: static_link)
+rkmpp = dependency('rockchip_mpp', required: false, static: static_link)
+rkvpu = dependency('rockchip_vpu', required: false, static: static_link)
 systemd = dependency('systemd', required: false)
 if systemd.found()
     systemd_system_unit_dir = systemd.get_variable('systemdsystemunitdir')
@@ -95,6 +97,8 @@ webrtc_kvm = executable(
         bzip2,
         pam,
         x264,
+        rkmpp,
+        rkvpu,
     ],
     link_args: link_args,
     link_language: 'cpp',
