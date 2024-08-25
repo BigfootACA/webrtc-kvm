@@ -12,7 +12,7 @@ void V4L2Device::DequeueBuffer(V4L2StreamBuffer**buffer){
 	V4L2StreamBuffer*b;
 	if(buffer)*buffer=nullptr;
 	bool mplane=v4l2_type_mplane_check(type);
-	v4l2_plane planes[VIDEO_MAX_PLANES];
+	v4l2_plane planes[VIDEO_MAX_PLANES]{};
 	v4l2_buffer buf={.type=type,.memory=memory};
 	if(mplane)buf.m.planes=planes,buf.length=plane_count;
 	v4l2_buffer_dequeue(device_fd,buf);
