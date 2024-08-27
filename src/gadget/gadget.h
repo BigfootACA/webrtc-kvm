@@ -17,4 +17,7 @@ enum mouse_mode{
 	MOUSE_TOUCHSCREEN = 3,
 };
 
+extern std::string MouseModeToString(mouse_mode mode);
+extern mouse_mode StringToMouseMode(const std::string&mode);
+
 #endif
