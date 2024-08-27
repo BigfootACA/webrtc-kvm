@@ -266,6 +266,7 @@ function initializeFloatDrag(obj,cb=null,init_x=-1,init_y=-1){
 		localStorage.setItem(`${obj.id}-y`,c.y);
 	}
 	const moving=e=>{
+		if(e.movementX===0&&e.movementY===0)return;
 		base.m=true;
 		let x=e.clientX-base.x;
 		let y=e.clientY-base.y;
