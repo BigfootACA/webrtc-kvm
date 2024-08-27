@@ -364,7 +364,7 @@ function onInputEvent(type,event){
 			data.last_report.movementX=0;
 			data.last_report.movementY=0;
 		}
-		event.preventDefault();
+		if(event.cancelable)event.preventDefault();
 	};
 	let proc_key=key_type=>{
 		set8(3,key_type);
@@ -375,12 +375,12 @@ function onInputEvent(type,event){
 		set16(4,event.deltaX);
 		set16(6,event.deltaY);
 		set16(8,event.deltaZ);
-		event.preventDefault();
+		if(event.cancelable)event.preventDefault();
 	};
 	let proc_touch=touch_type=>{
 		set8(3,touch_type);
 		/* TODO */
-		event.preventDefault();
+		if(event.cancelable)event.preventDefault();
 	};
 	buffer.set([0x21,0x49,0x4e],0); /* add magic head */
 	switch(type){
