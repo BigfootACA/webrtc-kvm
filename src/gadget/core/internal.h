@@ -14,7 +14,7 @@
 #include"lib/files.h"
 #include"lib/strings.h"
 
-#define VALIDS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_+=.,@"
+#define VALIDS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+=.,@"
 
 #define IMPL_ATTR_STRING(cls,name,path)\
 	std::string cls::Get##name()const{\
