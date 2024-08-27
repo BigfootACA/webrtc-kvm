@@ -19,6 +19,7 @@ struct gadget_ctx{
 	std::shared_ptr<GadgetConfig>config;
 	std::shared_ptr<GadgetHID>keyboard;
 	std::shared_ptr<GadgetHID>mouse;
+	std::mutex lock;
 };
 
 extern void InitializeGadget(webrtc_kvm*ctx);

@@ -11,6 +11,7 @@
 #include"input/hid.h"
 #include"input/input_ctx.h"
 #include"gadget_ctx.h"
+#include<mutex>
 
 void GadgetCloseInput(webrtc_kvm*ctx){
 	auto input=ctx->usb.input;
@@ -72,7 +73,14 @@ static void GadgetInitMouse(gadget_ctx*gadget,mouse_mode mode){
 
 void GadgetSetMouseMode(webrtc_kvm*ctx,mouse_mode mode){
 	auto gadget=ctx->usb.gadget;
+	std::unique_lock<std::mutex>l(gadget->lock);
 	if(mode==gadget->last_mode)return;
+	switch(mode){
+		case MOUSE_ABSOLUTE:
+		case MOUSE_RELATIVE:
+		case MOUSE_TOUCHSCREEN:break;
+		default:throw RuntimeError("unsupported mouse mode");
+	}
 	ClaimUDC lock(gadget->gadget);
 	GadgetCloseInput(ctx);
 	for(const auto&func:gadget->gadget->ListFunctions())
