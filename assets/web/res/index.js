@@ -340,21 +340,27 @@ function keyCodeMap(code){
 function onInputEvent(type,event){
 	let now=Date.now();
 	let want_report=true;
-	let relative=document.pointerLockElement===data.canvas;
 	let buffer=new Uint8Array(12);
 	let set8=(off,val)=>buffer.set([val],off);
 	let set16=(off,val)=>buffer.set([val>>0&0xFF,val>>8&0xFF],off);
 	let proc_mouse=(relative_type,absolute_type)=>{
-		if(relative){
-			data.last_report.movementX+=event.movementX;
-			data.last_report.movementY+=event.movementY;
-			set8(3,relative_type);
-			set16(4,data.last_report.movementX);
-			set16(6,data.last_report.movementY);
-		}else{
-			set8(3,absolute_type);
-			set16(4,event.offsetX*65535/data.canvas.width);
-			set16(6,event.offsetY*65535/data.canvas.height);
+		switch(data.mouse){
+			case "absolute":
+				set8(3,absolute_type);
+				set16(4,event.offsetX*65535/data.canvas.width);
+				set16(6,event.offsetY*65535/data.canvas.height);
+			break;
+			case "relative":
+				if(document.pointerLockElement===data.canvas){
+					data.last_report.movementX+=event.movementX;
+					data.last_report.movementY+=event.movementY;
+					set8(3,relative_type);
+					set16(4,data.last_report.movementX);
+					set16(6,data.last_report.movementY);
+				}
+			default:
+				want_report=false;
+				return;
 		}
 		if(type.endsWith("down")||type.endsWith("up")){
 			set8(8,event.button+1);
@@ -371,6 +377,14 @@ function onInputEvent(type,event){
 		set16(4,keyCodeMap(event.code));
 	};
 	let proc_wheel=wheel_type=>{
+		switch(data.mouse){
+			case "absolute":break;
+			case "relative":
+				if(document.pointerLockElement===data.canvas)break;
+			default:
+				want_report=false;
+				return;
+		}
 		set8(3,wheel_type);
 		set16(4,event.deltaX);
 		set16(6,event.deltaY);
@@ -378,6 +392,10 @@ function onInputEvent(type,event){
 		if(event.cancelable)event.preventDefault();
 	};
 	let proc_touch=touch_type=>{
+		if(data.mouse!=="touchscreen"){
+			want_report=false;
+			return;
+		}
 		set8(3,touch_type);
 		/* TODO */
 		if(event.cancelable)event.preventDefault();
