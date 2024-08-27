@@ -46,9 +46,11 @@ void InitializeGadget(webrtc_kvm*ctx){
 			ctx->usb.udc=detected;
 		}else log_warn("no any udc found");
 	}
-	if(!ctx->usb.udc.empty()){
+	if(!ctx->usb.udc.empty())try{
 		log_info("enable UDC {}",ctx->usb.udc);
 		gadget->gadget->SetUDC(ctx->usb.udc);
 		GadgetOpenInput(ctx);
+	}catch(std::exception&exc){
+		log_warn("enable gadget failed: {}",exc.what());
 	}
 }
