@@ -122,9 +122,12 @@ function disconnectWebRTC(){
 }
 
 function sendEvent(event){
+	try{
 	if(data.event_ch&&data.event_ch.readyState==="open"){
-		data.last_report.time=now;
-		data.input_ch.send(JSON.stringify(event));
+			data.event_ch.send(JSON.stringify(event));
+		}
+	}catch(err){
+		console.error(err);
 	}
 }
 
