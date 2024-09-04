@@ -50,6 +50,7 @@ class WebRTCInstance{
 		void OnGatheringStateChange(rtc::PeerConnection::GatheringState state);
 		void OnInputMessage(rtc::message_variant data);
 		void OnEventMessage(rtc::message_variant data);
+		void OnEventOpen();
 		void OnDataChannel(std::shared_ptr<rtc::DataChannel>ch);
 		void ReportSize();
 		void SendEvent(Json::Value&node);

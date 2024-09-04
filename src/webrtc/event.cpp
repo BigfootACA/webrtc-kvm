@@ -8,6 +8,10 @@
 
 #include"webrtc.h"
 
+void WebRTCInstance::OnEventOpen(){
+	ReportSize();
+}
+
 void WebRTCInstance::OnEventMessage(rtc::message_variant data){
 	try{
 		Json::Value node;

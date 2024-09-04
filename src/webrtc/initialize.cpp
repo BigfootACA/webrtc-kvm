@@ -22,6 +22,7 @@ void WebRTCInstance::Init(){
 		throw RuntimeError("create WebRTC event channel failed");
 	input->onMessage([this](auto val){OnInputMessage(val);});
 	event->onMessage([this](auto val){OnEventMessage(val);});
+	event->onOpen([this](){OnEventOpen();});
 	peer->setLocalDescription();
 }
 
