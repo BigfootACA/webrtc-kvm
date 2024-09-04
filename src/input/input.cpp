@@ -6,17 +6,14 @@
  *
  */
 
-#include<cstdlib>
 #include"webrtc_kvm.h"
-#include"lib/full_io.h"
 #include"lib/exception.h"
-#include"hid.h"
 #include"input.h"
 #include"input_ctx.h"
 
 #define WRITE_REPORT(type1,type2)do{\
 	if(hid_##type1##_fd<0)break;\
-	full_write(hid_##type1##_fd,&report.type1,sizeof(report.type1));\
+	write(hid_##type1##_fd,&report.type1,sizeof(report.type1));\
 }while(0)
 #define FILL_WRITE_REPORT(type1,type2)do{\
 	if(hid_##type1##_fd<0)break;\
