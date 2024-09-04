@@ -7,9 +7,14 @@
  */
 
 #include"webrtc.h"
+#include"gadget/gadget_ctx.h"
 
 void WebRTCInstance::OnEventOpen(){
 	ReportSize();
+	Json::Value event;
+	event["type"]="mouse_mode_changed";
+	event["mode"]=MouseModeToString(kvm->usb.gadget->last_mode);
+	SendEvent(event);
 }
 
 void WebRTCInstance::OnEventMessage(rtc::message_variant data){
@@ -22,6 +27,7 @@ void WebRTCInstance::OnEventMessage(rtc::message_variant data){
 		);
 		auto type=node["type"].asString();
 		log_info("got event {} in webrtc {}",type,uuid.ToString());
+		if(type=="mouse_mode_set")OnMouseModeEvent(node);
 	}catch(std::exception&exc){
 		log_warn(
 			"failed to handle event in webrtc {}: {}",

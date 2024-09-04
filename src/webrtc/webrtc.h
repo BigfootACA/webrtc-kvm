@@ -51,6 +51,7 @@ class WebRTCInstance{
 		void OnInputMessage(rtc::message_variant data);
 		void OnEventMessage(rtc::message_variant data);
 		void OnEventOpen();
+		void OnMouseModeEvent(Json::Value&event);
 		void OnDataChannel(std::shared_ptr<rtc::DataChannel>ch);
 		void ReportSize();
 		void SendEvent(Json::Value&node);
