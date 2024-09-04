@@ -17,10 +17,10 @@ void V4L2Output::OnInitialize(){
 }
 
 v4l2_buf_type V4L2Output::DetectType(uint32_t cap){
-	if(have_bit(device_cap,V4L2_CAP_VIDEO_M2M_MPLANE)||have_bit(device_cap,V4L2_CAP_VIDEO_OUTPUT_MPLANE)){
+	if(have_bit(cap,V4L2_CAP_VIDEO_M2M_MPLANE)||have_bit(cap,V4L2_CAP_VIDEO_OUTPUT_MPLANE)){
 		log_info("Output using multiple plane API");
 		return V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
-	}else if(have_bit(device_cap,V4L2_CAP_VIDEO_M2M)||have_bit(device_cap,V4L2_CAP_VIDEO_OUTPUT)){
+	}else if(have_bit(cap,V4L2_CAP_VIDEO_M2M)||have_bit(cap,V4L2_CAP_VIDEO_OUTPUT)){
 		log_info("Output using single plane API");
 		return V4L2_BUF_TYPE_VIDEO_OUTPUT;
 	}else throw InvalidArgument("target device is not a V4L2 Output");

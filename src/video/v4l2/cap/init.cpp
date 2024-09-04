@@ -23,10 +23,10 @@ void V4L2Capture::SetupDevice(){
 }
 
 v4l2_buf_type V4L2Capture::DetectType(uint32_t cap){
-	if(have_bit(device_cap,V4L2_CAP_VIDEO_M2M_MPLANE)||have_bit(device_cap,V4L2_CAP_VIDEO_CAPTURE_MPLANE)){
+	if(have_bit(cap,V4L2_CAP_VIDEO_M2M_MPLANE)||have_bit(cap,V4L2_CAP_VIDEO_CAPTURE_MPLANE)){
 		log_info("Capture using multiple plane API");
 		return V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
-	}else if(have_bit(device_cap,V4L2_CAP_VIDEO_M2M)||have_bit(device_cap,V4L2_CAP_VIDEO_CAPTURE)){
+	}else if(have_bit(cap,V4L2_CAP_VIDEO_M2M)||have_bit(cap,V4L2_CAP_VIDEO_CAPTURE)){
 		log_info("Capture using single plane API");
 		return V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	}else throw InvalidArgument("target device is not a V4L2 Capture");

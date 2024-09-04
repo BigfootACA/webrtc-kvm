@@ -40,3 +40,13 @@ void V4L2MemoryToMemory::OnDeinitialize(){
 	cap->OnDeinitialize();
 	V4L2Device::OnDeinitialize();
 }
+
+v4l2_buf_type V4L2MemoryToMemory::DetectType(uint32_t cap){
+	if(have_bit(cap,V4L2_CAP_VIDEO_M2M_MPLANE)){
+		log_info("Memory-to-Memory using multiple plane API");
+		return V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+	}else if(have_bit(cap,V4L2_CAP_VIDEO_M2M)){
+		log_info("Memory-to-Memory using single plane API");
+		return V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	}else throw InvalidArgument("target device is not a V4L2 Capture");
+}

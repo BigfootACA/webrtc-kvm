@@ -26,7 +26,3 @@ V4L2MemoryToMemory::~V4L2MemoryToMemory(){
 	delete cap;
 	delete out;
 }
-
-v4l2_buf_type V4L2MemoryToMemory::DetectType(uint32_t){
-	throw InvalidArgument("V4L2MemoryToMemory DetectType disabled");
-}
