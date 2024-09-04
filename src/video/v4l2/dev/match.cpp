@@ -25,6 +25,7 @@ void V4L2Device::FindMatchDevice(){
 		v4l2_capabilities_probe(fd,cap,driver,card);
 		if(!match.card.empty()&&card!=match.card)continue;
 		if(!match.driver.empty()&&driver!=match.driver)continue;
+		if(DetectType(cap)==0)continue;
 		path=PathFromDevice(S_IFCHR,dev);
 		log_info("found match device {} for {}",path,GetID());
 		return;
