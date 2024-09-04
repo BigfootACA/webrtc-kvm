@@ -21,7 +21,8 @@ let data={
 		movementX: 0,
 		movementY: 0,
 		time: 0,
-	}
+	},
+	touch:[],
 };
 
 function setHidden(obj,hidden){
@@ -123,7 +124,7 @@ function disconnectWebRTC(){
 
 function sendEvent(event){
 	try{
-	if(data.event_ch&&data.event_ch.readyState==="open"){
+		if(data.event_ch&&data.event_ch.readyState==="open"){
 			data.event_ch.send(JSON.stringify(event));
 		}
 	}catch(err){
@@ -388,6 +389,7 @@ function onInputEvent(type,event){
 					set8(3,relative_type);
 					set16(4,data.last_report.movementX);
 					set16(6,data.last_report.movementY);
+					break;
 				}
 			default:
 				want_report=false;
@@ -428,7 +430,47 @@ function onInputEvent(type,event){
 			return;
 		}
 		set8(3,touch_type);
-		/* TODO */
+		const rect=data.canvas.getBoundingClientRect();
+		if(event.changedTouches.length<1){
+			want_report=false;
+			return;
+		}
+		const touch=event.changedTouches[0];
+		const i=touch.identifier;
+		if(touch.target!==data.canvas||i>=10){
+			want_report=false;
+			return;
+		}
+		let x=Math.round((touch.clientX-rect.x)*65535/rect.width);
+		let y=Math.round((touch.clientY-rect.y)*65535/rect.height);
+		if(!(i in data.touch))data.touch[i]={x:x,y:y,pressed:false};
+		if(x<0||y<0||x>65535||y>65535){
+			if(type==="touchmove"&&data.touch[i].pressed){
+				x=data.touch[i].x;
+				y=data.touch[i].y;
+				type="touchcancel";
+				touch_type=13;
+			}else{
+				want_report=false;
+				return;
+			}
+		}
+		set8(3,touch_type);
+		set16(4,x);
+		set16(6,y);
+		set8(8,i);
+		data.touch[i].x=x;
+		data.touch[i].y=y;
+		switch(type){
+			case "touchstart":
+			case "touchmove":
+				data.touch[i].pressed=true;
+			break;
+			case "touchend":
+			case "touchcancel":
+				data.touch[i].pressed=false;
+			break;
+		}
 		if(event.cancelable)event.preventDefault();
 	};
 	buffer.set([0x21,0x49,0x4e],0); /* add magic head */
