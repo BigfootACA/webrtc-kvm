@@ -5,6 +5,7 @@ webrtc_kvm_src_http_handlers = files([
 	'auth_logout.cpp',
 	'exit.cpp',
 	'input_get_key_map.cpp',
+	'input_get_mouse_mode.cpp',
 	'static.cpp',
 	'stream_start.cpp',
 	'stream_status.cpp',
