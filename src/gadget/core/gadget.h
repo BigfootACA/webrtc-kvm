@@ -75,9 +75,15 @@ class Gadget:public std::enable_shared_from_this<Gadget>,public GadgetBase{
 class ClaimUDC{
 	public:
 		inline explicit ClaimUDC(const std::shared_ptr<Gadget>&gadget):gadget(gadget){gadget->PauseUDC();}
-		inline ~ClaimUDC(){gadget->ResumeUDC();}
+		inline void Resume(){
+			if(resume)return;
+			gadget->ResumeUDC();
+			resume=true;
+		}
+		inline ~ClaimUDC(){Resume();}
 	private:
 		std::shared_ptr<Gadget>gadget;
+		bool resume=false;
 };
 
 #endif
