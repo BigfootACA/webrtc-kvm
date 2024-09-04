@@ -1,1 +1,2 @@
 option('static', type:'boolean', value:false, description:'Statically linked binary')
+option('client', type:'feature', value:'auto', description:'WebRTC-KVM Qt Client')

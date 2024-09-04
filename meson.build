@@ -26,6 +26,15 @@ inc = [
 add_project_arguments(['-include','global.h'], language: 'c')
 add_project_arguments(['-include','global.h','-Wno-psabi'], language: 'cpp')
 
+qt6 = import('qt6')
+qt6_dep = dependency('qt6', required: false, modules: [
+    'Core',
+    'Gui',
+    'Widgets',
+    'Network',
+    'Multimedia',
+    'MultimediaWidgets',
+])
 libdatachannel = dependency('LibDataChannel', required: true, static: static_link)
 libmicrohttpd = dependency('libmicrohttpd', required: true, static: static_link)
 libyaml_cpp = dependency('yaml-cpp', required: true, static: static_link)
@@ -41,6 +50,11 @@ pam = dependency('pam', required: false, static: static_link)
 x264 = dependency('x264', required: false, static: static_link)
 rkmpp = dependency('rockchip_mpp', required: false, static: static_link)
 rkvpu = dependency('rockchip_vpu', required: false, static: static_link)
+libavutil = dependency('libavutil', required: false, static: static_link)
+libavcodec = dependency('libavcodec', required: false, static: static_link)
+libavformat = dependency('libavformat', required: false, static: static_link)
+libswscale = dependency('libswscale', required: false, static: static_link)
+libx11 = dependency('x11', required: false, static: static_link)
 systemd = dependency('systemd', required: false)
 if systemd.found()
     systemd_system_unit_dir = systemd.get_variable('systemdsystemunitdir')
@@ -67,8 +81,20 @@ install_data(
     install_mode: 'rw-r--r--',
     install_dir: get_option('sysconfdir') / 'webrtc-kvm',
 )
+install_data(
+    'assets/webrtc-kvm.svg',
+    install_mode: 'rw-r--r--',
+    install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps/',
+)
+
+enable_client = get_option('client')
+enable_client.disable_if(not qt6_dep.found())
+enable_client.disable_if(not libavcodec.found())
+enable_client.disable_if(not libavutil.found())
+enable_client.disable_if(not libswscale.found())
 
 webrtc_kvm_src = files([])
+webrtc_client_src = files([])
 subdir('src')
 
 web_builtin_dir = join_paths(meson.current_source_dir(), 'assets/web')
@@ -105,5 +131,35 @@ webrtc_kvm = executable(
     install: true,
     include_directories: inc,
 )
+
+if enable_client.enabled()
+    executable(
+        'webrtc-kvm-client',
+        webrtc_client_src,
+        dependencies: [
+            libdatachannel,
+            libjsoncpp,
+            libuuid,
+            openssl,
+            qt6_dep,
+            libavcodec,
+            libavutil,
+            libswscale,
+            libx11,
+        ],
+        link_args: link_args,
+        link_language: 'cpp',
+        install: true,
+        include_directories: inc,
+    )
+    configure_file(
+        input: 'assets/webrtc-kvm-client.desktop.in',
+        output: 'webrtc-kvm-client.desktop',
+        install: true,
+        install_mode: 'rw-r--r--',
+        install_dir: get_option('datadir') / 'applications',
+        configuration : conf_data,
+    )
+endif
 
 test('webrtc-kvm test', webrtc_kvm, args : ['-T'])

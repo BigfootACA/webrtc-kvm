@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=4.1.0
+Encoding=UTF-8
+Name=WebRTC KVM Client
+Comment=WebRTC KVM Client
+Exec=@bindir@/webrtc-kvm-client
+Icon=webrtc-kvm
+GenericName=WebRTC KVM Client
+Categories=Network;RemoteControl;
+Type=Application
+Terminal=false
