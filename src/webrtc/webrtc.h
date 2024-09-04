@@ -51,6 +51,7 @@ class WebRTCInstance{
 		void OnInputMessage(rtc::message_variant data);
 		void OnEventMessage(rtc::message_variant data);
 		void OnDataChannel(std::shared_ptr<rtc::DataChannel>ch);
+		void ReportSize();
 		void SendEvent(Json::Value&node);
 		void SendEvent(const std::string&str);
 		std::mutex lock;

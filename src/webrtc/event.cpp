@@ -26,6 +26,12 @@ void WebRTCInstance::OnEventMessage(rtc::message_variant data){
 	}
 }
 
+void WebRTCInstance::ReportSize(){
+	Json::Value event;
+	if(ep->GenerateReportSize(event))
+		SendEvent(event);
+}
+
 void WebRTCInstance::SendEvent(Json::Value&node){
 	try{
 		Json::FastWriter writer;
