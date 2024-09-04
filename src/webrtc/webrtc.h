@@ -80,6 +80,7 @@ class WebRTCEndpoint:public Stream{
 		void NewInstance(std::pair<UUID,WebRTCInstance*>&ins);
 	protected:
 		void ReportSize();
+		bool GenerateReportSize(Json::Value&event);
 		void OnStartStream()final;
 		void OnStopStream()final;
 		void OnInitialize()final;

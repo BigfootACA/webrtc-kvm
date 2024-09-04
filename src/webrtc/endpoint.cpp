@@ -8,19 +8,24 @@
 
 #include"webrtc.h"
 
-void WebRTCEndpoint::ReportSize(){
-	if(!input)return;
+bool WebRTCEndpoint::GenerateReportSize(Json::Value&event){
+	if(!input)return false;
 	auto src=GetInputStream();
 	auto width=src->GetWidth();
 	auto height=src->GetHeight();
 	auto fps=src->GetFrameRate();
-	if(width==0&&height==0&&fps==0)return;
-	Json::Value event;
+	if(width==0&&height==0&&fps==0)return false;
 	event["type"]="resize";
 	event["width"]=width;
 	event["height"]=height;
 	event["fps"]=fps;
-	SendEventAll(event);
+	return true;
+}
+
+void WebRTCEndpoint::ReportSize(){
+	Json::Value event;
+	if(GenerateReportSize(event))
+		SendEventAll(event);
 }
 
 void WebRTCEndpoint::OnInitialize(){
