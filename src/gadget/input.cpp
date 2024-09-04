@@ -58,14 +58,15 @@ static void GadgetInitKeyboard(gadget_ctx*gadget){
 static void GadgetInitMouse(gadget_ctx*gadget,mouse_mode mode){
 	size_t len;
 	const HIDReportDesc*desc;
+	uint8_t subclass=1,protocol=2;
 	switch(mode){
 		case MOUSE_ABSOLUTE:len=sizeof(HIDAbsoluteReport),desc=&HIDDescAbsolute;break;
 		case MOUSE_RELATIVE:len=sizeof(HIDRelativeReport),desc=&HIDDescRelative;break;
 		default:throw RuntimeError("unsupported mouse mode");
 	}
 	gadget->mouse=std::make_shared<GadgetHID>(gadget->gadget,"mouse");
-	gadget->mouse->SetProtocol(2);
-	gadget->mouse->SetSubClass(1);
+	gadget->mouse->SetProtocol(protocol);
+	gadget->mouse->SetSubClass(subclass);
 	gadget->mouse->SetReportLength(len);
 	gadget->mouse->WriteReportDescriptor(desc);
 	gadget->config->LinkFunction(gadget->mouse);
@@ -89,5 +90,6 @@ void GadgetSetMouseMode(webrtc_kvm*ctx,mouse_mode mode){
 	GadgetInitKeyboard(gadget);
 	GadgetInitMouse(gadget,mode);
 	gadget->last_mode=mode;
+	lock.Resume();
 	GadgetOpenInput(ctx);
 }
