@@ -324,7 +324,7 @@ function lockPointerRequest(){
 
 function requestFullScreen(){
 	document.body.requestFullscreen();
-	document.querySelector("li#scale-fit").click();
+	document.querySelector("li#scale-fit").select();
 	if(data.mouse==="relative")lockPointerRequest();
 }
 
@@ -614,7 +614,8 @@ function onScreenResize(){
 	else if(!scr.first_fullscreen){
 		scr.first_fullscreen=true;
 		fullscreen=true;
-		document.querySelector("li#scale-fit").click();
+		const item=document.querySelector("li#scale-fit");
+		if(item&&item.select)item.select();
 	}
 	onFullScreenChanged(fullscreen);
 	let w=data.width,h=data.height;
@@ -683,10 +684,13 @@ function initializeRadioMenu(){
 				menu.dataset.selected=btn.id;
 				if(presistent)localStorage.setItem(storage,btn.id);
 			};
-			btn.addEventListener("click",()=>{
-				if(expander&&!expander_is_open())return;
+			btn.select=()=>{
 				change_check();
 				menu.dispatchEvent(event);
+			};
+			btn.addEventListener("click",()=>{
+				if(expander&&!expander_is_open())return;
+				btn.select();
 			});
 			if(storage&&def!==null&&def===btn.id)change_check();
 			else if(is_checked(btn))change_check();
