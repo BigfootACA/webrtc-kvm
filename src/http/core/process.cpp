@@ -32,7 +32,7 @@ MHD_Result HttpRequestContext::CatchRun(std::function<MHD_Result(HttpRequestCont
 MHD_Result HttpHandler::Process(HttpRequestContext*ctx){
 	auto hand_method=GetMethod();
 	if(ctx->method==HTTP_METHOD_OPTIONS&&!have_bit(hand_method,HTTP_METHOD_OPTIONS))
-		return ctx->HandleString(MHD_HTTP_NO_CONTENT,nullptr,"");
+		return ctx->HandleString(MHD_HTTP_NO_CONTENT,"","");
 	if(hand_method!=0&&!have_bit(hand_method,ctx->method))
 		throw HttpError(MHD_HTTP_METHOD_NOT_ALLOWED,"method unsupported");
 	if(NeedAuth()&&!ctx->ctx->http.auth.no_auth){
