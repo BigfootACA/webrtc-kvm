@@ -131,6 +131,26 @@ function sendEvent(event){
 	}
 }
 
+function updateMouseMode(){
+	console.log(`mouse mode changed to ${data.mouse}`);
+}
+
+function remoteSetMouseMode(mode){
+	let id=null;
+	switch(mode){
+		case "absolute":id="mouse-absolute";break;
+		case "relative":id="mouse-relative";break;
+		case "touchscreen":id="mouse-touch";break;
+		default:return;
+	}
+	const menu=document.querySelector("ul#radio-mouse-mode");
+	if(mode!==data.mouse||menu.dataset.selected!==id){
+		data.mouse=mode;
+		menu.querySelector(`li#${id}`).select();
+		updateMouseMode();
+	}
+}
+
 function processEvent(event){
 	console.log(`got event ${event.type}`);
 	console.log(event);
@@ -140,6 +160,9 @@ function processEvent(event){
 			data.width=event.width;
 			data.height=event.height;
 			onScreenResize();
+		break;
+		case "mouse_mode_changed":
+			remoteSetMouseMode(event.mode);
 		break;
 	}
 }
@@ -161,6 +184,14 @@ function onDatachannel(ev){
 		break;
 		case "event":
 			data.event_ch=ev.channel;
+			data.event_ch.addEventListener("open",()=>{
+				console.debug("webrtc event channel opened");
+				sendEvent({type:"mouse_mode_set",mode:data.mouse});
+				updateMouseMode();
+			});
+			data.event_ch.addEventListener("close",()=>{
+				console.debug("webrtc event channel closed");
+			});
 			data.event_ch.addEventListener("message",ev=>{
 				processEvent(JSON.parse(ev.data));
 			});
@@ -528,6 +559,11 @@ async function setupKeyMap(){
 	data.mapping=ret.map;
 }
 
+async function setupMouseMode(){
+	const ret=await apiCall("/api/input/get_mouse_mode");
+	remoteSetMouseMode(ret.mode);
+}
+
 async function setupLogin(){
 	const ret=await apiCall("/api/auth/info");
 	if(ret.no_login){
@@ -561,6 +597,7 @@ async function loadPage(){
 	setStatus("Ready");
 	doCheckFunctions();
 	await setupKeyMap();
+	await setupMouseMode();
 	await setupLogin();
 	const mask=document.querySelector("div#loading-mask");
 	setAnimateHidden(mask).then(()=>{
@@ -705,6 +742,28 @@ function initializeScreenResizer(){
 	onScreenResize();
 }
 
+function initializeMouseMode(){
+	const mouse_mode=document.querySelector("ul#radio-mouse-mode");
+	mouse_mode.addEventListener("selectionchanged",()=>{
+		let selected=null;
+		switch(mouse_mode.dataset.selected){
+			case "mouse-absolute":selected="absolute";break;
+			case "mouse-relative":selected="relative";break;
+			case "mouse-touch":selected="touchscreen";break;
+			default:return;
+		}
+		if(data.mouse!==selected){
+			if(data.event_ch&&data.event_ch.readyState==="open"){
+				sendEvent({type:"mouse_mode_set",mode:selected});
+			}else{
+				apiCall("/api/input/set_mouse_mode",{mode:selected});
+			}
+			data.mouse=selected;
+			updateMouseMode();
+		}
+	});
+}
+
 function initializeFullScreen(){
 	document.addEventListener("keydown",(ev)=>{
 		if(ev.code==="F11"){
@@ -783,6 +842,7 @@ async function initializePage(){
 		initializeFloatButton();
 		initializeRadioMenu();
 		initializeMenu();
+		initializeMouseMode();
 		await loadPage();
 	}catch(e){
 		console.error(e);
