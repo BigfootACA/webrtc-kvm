@@ -75,4 +75,23 @@ void InputFillHIDAbsolute(HIDAbsoluteReport*r,const InputEvent*ev){
 
 void InputFillHIDTouchscreen(HIDTouchscreenReport*r,const InputEvent*ev){
 	if(unlikely(!r||!ev))return;
+	if(ev->touch.finger>=10)return;
+	r->contact_id=ev->touch.finger;
+	switch(ev->type){
+		case EVENT_TOUCH_START:
+			r->contact_count++;
+			r->tip_switch=true;
+			r->in_range=true;
+		break;
+		case EVENT_TOUCH_MOVE:break;
+		case EVENT_TOUCH_END:
+		case EVENT_TOUCH_CANCEL:
+			r->contact_count--;
+			r->tip_switch=false;
+			r->in_range=false;
+		break;
+		default:return;
+	}
+	r->position_x=ev->touch.pos_x/2;
+	r->position_y=ev->touch.pos_y/2;
 }

@@ -122,6 +122,58 @@ static const uint8_t d_hid_desc_relative[]={
 	0xc0              // End Collection
 };
 
+static const uint8_t d_hid_desc_touch[] = {
+	0x05, 0x0d,       // Usage Page (Digitizers)
+	0x09, 0x04,       // Usage (Touch Screen)
+	0xa1, 0x01,       // Collection (Application)
+	0x85, 0x01,       //  Report ID (1)
+	0x09, 0x22,       //   Usage (Finger)
+	0xa1, 0x02,       //   Collection (Logical)
+	0x09, 0x42,       //     Usage (Tip Switch)
+	0x15, 0x00,       //     Logical Minimum (0)
+	0x25, 0x01,       //     Logical Maximum (1)
+	0x75, 0x01,       //     Report Size (1)
+	0x95, 0x01,       //     Report Count (1)
+	0x81, 0x02,       //     Input (Data, Variable, Absolute)
+	0x09, 0x32,       //     Usage (In Range)
+	0x81, 0x02,       //     Input (Data, Variable, Absolute)
+	0x95, 0x06,       //     Report Count (6)
+	0x81, 0x03,       //     Input (Constant, Variable, Absolute)
+	0x75, 0x08,       //     Report Size (8)
+	0x09, 0x51,       //     Usage (Contact Identifier)
+	0x95, 0x01,       //     Report Count (1)
+	0x81, 0x02,       //     Input (Data, Variable, Absolute)
+	0x05, 0x01,       //     Usage Page (Generic Desktop)
+	0x09, 0x30,       //     Usage (X)
+	0x09, 0x31,       //     Usage (Y)
+	0x15, 0x00,       //     Logical Minimum (0)
+	0x26, 0xff, 0x7f, //     Logical Maximum (32767)
+	0x65, 0x00,       //     Unit (None)
+	0x75, 0x10,       //     Report Size (16)
+	0x95, 0x02,       //     Report Count (2)
+	0x81, 0x02,       //     Input (Data, Variable, Absolute)
+	0xc0,             //   End Collection
+	0x05, 0x0d,       //   Usage Page (Digitizers)
+	0x09, 0x54,       //   Usage (Contact Count)
+	0x25, 0x7f,       //   Logical Maximum (127)
+	0x95, 0x01,       //   Report Count (1)
+	0x75, 0x08,       //   Report Size (8)
+	0x81, 0x02,       //   Input (Data, Variable, Absolute)
+	0x05, 0x0d,       //   Usage Page (Digitizers)
+	0x09, 0x55,       //   Usage (Contact Count Maximum)
+	0x25, 0x7f,       //   Logical Maximum (127)
+	0xb1, 0x02,       //   Feature (Data, Variable, Absolute)
+	0x06, 0x00, 0xff, //   Usage Page (Vendor Defined Page 1)
+	0x09, 0xc5,       //   Usage (Vendor Usage 0xc5)
+	0x85, 0x05,       //   Report ID (5)
+	0x15, 0x00,       //   Logical Minimum (0)
+	0x26, 0xff, 0x00, //   Logical Maximum (255)
+	0x75, 0x08,       //   Report Size (8)
+	0x96, 0x00, 0x01, //   Report Count (256)
+	0xb1, 0x02,       //   Feature (Data,Var,Abs)
+	0xc0              // End Collection
+};
+
 const HIDReportDesc HIDDescKeyboard={
 	.data=d_hid_desc_keyboard,
 	.size=sizeof(d_hid_desc_keyboard),
@@ -135,4 +187,9 @@ const HIDReportDesc HIDDescAbsolute={
 const HIDReportDesc HIDDescRelative={
 	.data=d_hid_desc_relative,
 	.size=sizeof(d_hid_desc_relative),
+};
+
+const HIDReportDesc HIDDescTouch={
+	.data=d_hid_desc_touch,
+	.size=sizeof(d_hid_desc_touch),
 };

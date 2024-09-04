@@ -174,15 +174,24 @@ struct HIDAbsoluteReport{
 }cdecl_attr_packed;
 
 struct HIDTouchscreenReport{
+	bool tip_switch:1;
+	bool in_range:1;
+	uint8_t:6;
+	uint8_t contact_id;
+	uint16_t position_x;
+	uint16_t position_y;
+	uint8_t contact_count;
 }cdecl_attr_packed;
 
 static_assert(sizeof(HIDKeyboardReport)==8,"HID Keyboard report size mismatch");
 static_assert(sizeof(HIDRelativeReport)==4,"HID Relative Mouse report size mismatch");
 static_assert(sizeof(HIDAbsoluteReport)==6,"HID Absolute Mouse report size mismatch");
+static_assert(sizeof(HIDTouchscreenReport)==7,"HID Touch screen report size mismatch");
 
 extern const HIDReportDesc HIDDescKeyboard;
 extern const HIDReportDesc HIDDescAbsolute;
 extern const HIDReportDesc HIDDescRelative;
+extern const HIDReportDesc HIDDescTouch;
 extern HIDKeyCode InputKeyToHIDCode(InputKeyCode code);
 extern HIDKeyMod InputKeyToHIDMod(InputKeyCode code);
 extern void InputFillHIDKeyboard(HIDKeyboardReport*r,const InputEvent*ev);

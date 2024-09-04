@@ -62,6 +62,7 @@ static void GadgetInitMouse(gadget_ctx*gadget,mouse_mode mode){
 	switch(mode){
 		case MOUSE_ABSOLUTE:len=sizeof(HIDAbsoluteReport),desc=&HIDDescAbsolute;break;
 		case MOUSE_RELATIVE:len=sizeof(HIDRelativeReport),desc=&HIDDescRelative;break;
+		case MOUSE_TOUCHSCREEN:len=sizeof(HIDTouchscreenReport),desc=&HIDDescTouch,subclass=0,protocol=0;break;
 		default:throw RuntimeError("unsupported mouse mode");
 	}
 	gadget->mouse=std::make_shared<GadgetHID>(gadget->gadget,"mouse");

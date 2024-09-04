@@ -128,8 +128,8 @@ All audio streaming are not implements now
 |-----------------------------------|-------------|
 | USB Gadget HID Keyboard           | ✅ WORKS     |
 | USB Gadget HID Absolute Mouse     | ✅ WORKS     |
-| USB Gadget HID Relative Mouse     | ⛔ TODO      |
-| USB Gadget HID Touch Screen       | ⛔ TODO      |
+| USB Gadget HID Relative Mouse     | ✅ WORKS     |
+| USB Gadget HID Touch Screen       | ✅ WORKS     |
 | Bluetooth peripheral Keyboard     | ⛔ TODO      |
 | Bluetooth peripheral Mouse        | ⛔ TODO      |
 | Bluetooth peripheral Tablet       | ⛔ TODO      |
