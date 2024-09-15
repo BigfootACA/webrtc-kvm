@@ -39,6 +39,7 @@ def generate_src(out: str, folder: str, prefix: str) -> None:
 	lines += "\n/* files name table */\n"
 	lines += "".join((f"_name_{ident}: .ascii \"{idents[ident]}\\0\";.balign 8;\n" for ident in idents))
 	lines += ".balign 8;\n"
+	lines += ".section \".data\"\n"
 	lines += "\n/* files list */\n"
 	lines += f"DECL_ASM_VAR({prefix}_file_list)\n"
 	lines += "".join((
