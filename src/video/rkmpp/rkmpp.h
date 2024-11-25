@@ -81,8 +81,8 @@ class RockchipMediaProcessPlatform:public Stream{
 		void OnProcessInputEncoder(MppBuffer buf,StreamBuffer*buffer);
 		void OnProcessInputDecoder(MppBuffer buf,StreamBuffer*buffer);
 		void WriteHeader();
-		MppBuffer SetupFrameDMABUF(int fd,size_t used,size_t size);
-		MppBuffer SetupFramePointer(void*ptr,size_t used,size_t size);
+		MppBuffer SetupFrameDMABUF(StreamBuffer*buffer);
+		MppBuffer SetupFramePointer(StreamBuffer*buffer);
 		void WritePacket(MppPacket packet);
 		void WriteFrame(MppFrame frame);
 		void Reset();

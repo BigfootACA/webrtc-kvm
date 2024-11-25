@@ -9,41 +9,45 @@
 #include"rkmpp.h"
 #include"lib/exception.h"
 
-MppBuffer RockchipMediaProcessPlatform::SetupFrameDMABUF(int fd,size_t used,size_t size){
+MppBuffer RockchipMediaProcessPlatform::SetupFrameDMABUF(StreamBuffer*buffer){
 	MPP_RET ret;
 	std::shared_ptr<MppBufferDesc>desc;
-	if(fd<0)throw InvalidArgument("bad dmabuf fd");
-	if(unlikely(!dmabufs.contains(fd))){
+	if(unlikely(buffer->planes_cnt!=1))throw InvalidArgument(
+		"unsupported planes count {}",buffer->planes_cnt
+	);
+	auto&p=buffer->planes[0];
+	if(p.fd<0)throw InvalidArgument("bad dmabuf fd");
+	if(unlikely(!dmabufs.contains(p.fd))){
 		desc=std::make_shared<MppBufferDesc>();
-		desc->fd=fd;
+		desc->fd=p.fd;
 		desc->info.type=MPP_BUFFER_TYPE_DMA_HEAP;
-		desc->info.fd=fd;
-		desc->info.size=size;
+		desc->info.fd=p.fd;
+		desc->info.size=p.size;
 		desc->info.index=0;
 		if(MPP_ISERR(mpp_buffer_import(&desc->buff,&desc->info)))
-			throw RuntimeError("mpp import buffer {} failed: {}",fd,(int)ret);
-		dmabufs[fd]=desc;
-	}else desc=dmabufs[fd];
+			throw RuntimeError("mpp import buffer {} failed: {}",p.fd,(int)ret);
+		dmabufs[p.fd]=desc;
+	}else desc=dmabufs[p.fd];
 	return desc->buff;
 }
 
-MppBuffer RockchipMediaProcessPlatform::SetupFramePointer(void*ptr,size_t used,size_t size){
+MppBuffer RockchipMediaProcessPlatform::SetupFramePointer(StreamBuffer*buffer){
+	if(unlikely(buffer->planes_cnt!=1))throw InvalidArgument(
+		"unsupported planes count {}",buffer->planes_cnt
+	);
+	auto&p=buffer->planes[0];
 	void*buf=mpp_buffer_get_ptr(frm_buf);
 	size_t sz=mpp_buffer_get_size(frm_buf);
-	if(used>sz)throw InvalidArgument("buffer too large: {} > {}",used,sz);
-	memcpy(buf,ptr,used);
+	if(p.used>sz)throw InvalidArgument("buffer too large: {} > {}",p.used,sz);
+	memcpy(buf,p.ptr,p.used);
 	return frm_buf;
 }
 
 void RockchipMediaProcessPlatform::OnProcessInput(StreamBuffer*buffer){
-	if(unlikely(buffer->planes_cnt!=1))throw InvalidArgument(
-		"unsupported planes count {}",buffer->planes_cnt
-	);
 	MppBuffer fp;
-	auto&p=buffer->planes[0];
 	switch(buffer->type){
-		case BUFFER_POINTER:fp=SetupFramePointer(p.ptr,p.used,p.size);break;
-		case BUFFER_DMABUF:fp=SetupFrameDMABUF(p.fd,p.used,p.size);break;
+		case BUFFER_POINTER:fp=SetupFramePointer(buffer);break;
+		case BUFFER_DMABUF:fp=SetupFrameDMABUF(buffer);break;
 		default:throw InvalidArgument("unsupported buffer type");
 	}
 	if(unlikely(!fp))throw InvalidArgument("no buffer got");
