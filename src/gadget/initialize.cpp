@@ -39,6 +39,10 @@ void InitializeGadget(webrtc_kvm*ctx){
 	gadget->config=gadget->gadget->AddConfig("a",1);
 	gadget->config->AddString(0x409,"KVM");
 	GadgetSetMouseMode(ctx,MOUSE_ABSOLUTE);
+	if(!ctx->usb.enable){
+		log_info("skip enable gadget");
+		return;
+	}
 	if(ctx->usb.udc.empty()){
 		auto detected=Gadget::DetectUDC();
 		if(!detected.empty()){

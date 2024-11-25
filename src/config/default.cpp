@@ -18,6 +18,7 @@ void ConfigPopulateDefault(webrtc_kvm*ctx){
 	ctx->usb.product="WebRTC-KVM";
 	ctx->usb.id_product=0x0104;
 	ctx->usb.id_vendor=0x1d6b;
+	ctx->usb.enable=true;
 	ctx->video.fps=30;
 	ctx->http.auth.no_auth=true;
 }

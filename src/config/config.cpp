@@ -29,6 +29,7 @@ static void load_usb(webrtc_kvm*ctx,YAML::Node obj){
 	if(auto v=obj["product"])ctx->usb.product=v.as<std::string>();
 	if(auto v=obj["id_product"])ctx->usb.id_product=v.as<uint16_t>();
 	if(auto v=obj["id_vendor"])ctx->usb.id_vendor=v.as<uint16_t>();
+	if(auto v=obj["enable"])ctx->usb.enable=v.as<bool>();
 }
 
 static void load_http_auth_pam(webrtc_kvm*ctx,YAML::Node obj){

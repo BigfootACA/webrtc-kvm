@@ -38,6 +38,7 @@ class EventLoop;
 struct webrtc_kvm_usb{
 	InputContext*input;
 	gadget_ctx*gadget;
+	bool enable;
 	std::string udc;
 	std::string name;
 	std::string manufacturer;
