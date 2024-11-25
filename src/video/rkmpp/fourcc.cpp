@@ -66,7 +66,9 @@ uint32_t RockchipMediaProcessPlatform::MppFrameFormatToFourcc(MppFrameFormat fmt
 MppFrameFormat RockchipMediaProcessPlatform::FourccToMppFrameFormat(uint32_t fourcc){
 	switch(fourcc){
 		case V4L2_PIX_FMT_NV12:return MPP_FMT_YUV420SP;
+		case V4L2_PIX_FMT_NV12M:return MPP_FMT_YUV420SP;
 		case V4L2_PIX_FMT_NV16:return MPP_FMT_YUV422SP;
+		case V4L2_PIX_FMT_NV16M:return MPP_FMT_YUV422SP;
 		case V4L2_PIX_FMT_YUV422P:return MPP_FMT_YUV422P;
 		case V4L2_PIX_FMT_YUYV:return MPP_FMT_YUV422_YUYV;
 		case V4L2_PIX_FMT_YVYU:return MPP_FMT_YUV422_YVYU;

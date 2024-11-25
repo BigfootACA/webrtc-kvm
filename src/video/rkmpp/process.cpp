@@ -32,14 +32,14 @@ MppBuffer RockchipMediaProcessPlatform::SetupFrameDMABUF(StreamBuffer*buffer){
 }
 
 MppBuffer RockchipMediaProcessPlatform::SetupFramePointer(StreamBuffer*buffer){
-	if(unlikely(buffer->planes_cnt!=1))throw InvalidArgument(
-		"unsupported planes count {}",buffer->planes_cnt
-	);
-	auto&p=buffer->planes[0];
-	void*buf=mpp_buffer_get_ptr(frm_buf);
+	auto buf=(uint8_t*)mpp_buffer_get_ptr(frm_buf);
 	size_t sz=mpp_buffer_get_size(frm_buf);
-	if(p.used>sz)throw InvalidArgument("buffer too large: {} > {}",p.used,sz);
-	memcpy(buf,p.ptr,p.used);
+	for(size_t i=0;i<buffer->planes_cnt;i++){
+		auto&p=buffer->planes[i];
+		if(p.used>sz)throw InvalidArgument("buffer too large: {} > {}",p.used,sz);
+		memcpy(buf,p.ptr,p.used);
+		buf+=p.size,sz-=p.size;
+	}
 	return frm_buf;
 }
 
