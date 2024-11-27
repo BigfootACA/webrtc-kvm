@@ -1,4 +1,9 @@
-webrtc_kvm_src_compress = files(['compress.cpp'])
+webrtc_kvm_src_compress = files([
+	'find.cpp',
+	'process.cpp',
+	'property.cpp',
+	'register.cpp',
+])
 if zlib.found()
 	webrtc_kvm_src_compress += files(['zlib.cpp'])
 endif
