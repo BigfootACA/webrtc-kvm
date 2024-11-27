@@ -32,8 +32,6 @@ qt6_dep = dependency('qt6', required: false, modules: [
 	'Gui',
 	'Widgets',
 	'Network',
-	'Multimedia',
-	'MultimediaWidgets',
 ])
 libdatachannel = dependency('LibDataChannel', required: true, static: static_link)
 libmicrohttpd = dependency('libmicrohttpd', required: true, static: static_link)
