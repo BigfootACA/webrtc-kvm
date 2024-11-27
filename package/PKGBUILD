@@ -1,0 +1,82 @@
+# Maintainer: BigfootACA <bigfoot@classfun.cn>
+
+pkgname=webrtc-kvm
+pkgver=1.0
+pkgrel=1
+pkgdesc="Keyboard, Video, Mouse via WebRTC"
+arch=($CARCH)
+url="https://github.com/BigfootACA/webrtc-kvm"
+license=(GPL-3.0-or-later)
+depends=(
+	gcc-libs
+	libdatachannel
+	libmicrohttpd
+	yaml-cpp
+	jsoncpp
+	util-linux-libs
+	openssl
+)
+makedepends=(
+	meson
+	ninja
+	zlib
+	zstd
+	brotli
+	bzip2
+	pam
+	libx264
+	ffmpeg
+	libx11
+	qt6-base
+	python
+)
+optdepends=(
+	"zlib: http zlib/deflate compression plugin"
+	"zstd: http zstd compression plugin"
+	"brotli: http brotli compression plugin"
+	"bzip2: http bzip2 compression plugin"
+	"pam: http pam auth supports"
+	"libx264: video x264 software encoder plugin"
+	"ffmpeg: video ffmpeg software encoder plugin"
+	"libx11: video X11 capture plugin"
+	"qt6-base: Qt6 client supports"
+)
+backup=(etc/webrtc-kvm/config.yaml)
+source=(.gitkeep)
+sha256sums=(SKIP)
+
+if [ "$CARCH" == "aarch64" ]; then
+	makedepends+=(
+		rkmpp
+		librga
+	)
+	optdepends+=(
+		"librga: video rockchip rga transform plugin"
+		"rkmpp: video rockchip mpp encoder plugin"
+	)
+fi
+
+_toptree() {
+	realpath "$(dirname "$(realpath "$srcdir/.gitkeep")")/.."
+}
+
+pkgver() {
+	cd "$(_toptree)"
+	set -o pipefail
+	if ! git describe --long --tags 2> /dev/null | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'; then
+		printf "r%s.g%s\n" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	fi
+}
+
+build() {
+	arch-meson "$(_toptree)" build
+	meson compile -C build
+}
+
+check() {
+	meson test -C build
+}
+
+package() {
+	meson install -C build --destdir "$pkgdir"
+}
