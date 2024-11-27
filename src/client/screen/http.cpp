@@ -49,7 +49,7 @@ void WebRTCScreen::HttpCall(
 	std::function<void(Json::Value&,QNetworkReply*)>success,
 	std::function<void(Json::Value&,QNetworkReply*,const std::string&)>failed
 ){
-	QNetworkReply*reply;
+	QNetworkReply*reply=nullptr;
 	Json::FastWriter wr;
 	auto surl=std::format("{}{}",server,path);
 	try{
