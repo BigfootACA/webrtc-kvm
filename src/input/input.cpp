@@ -13,7 +13,8 @@
 
 #define WRITE_REPORT(type1,type2)do{\
 	if(hid_##type1##_fd<0)break;\
-	write(hid_##type1##_fd,&report.type1,sizeof(report.type1));\
+	auto ret=write(hid_##type1##_fd,&report.type1,sizeof(report.type1));\
+	if(ret!=sizeof(report.type1))throw RuntimeError("write mismatch");\
 }while(0)
 #define FILL_WRITE_REPORT(type1,type2)do{\
 	if(hid_##type1##_fd<0)break;\
