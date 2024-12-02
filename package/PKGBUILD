@@ -29,6 +29,7 @@ makedepends=(
 	libx11
 	qt6-base
 	python
+	python-pyelftools
 )
 optdepends=(
 	"zlib: http zlib/deflate compression plugin"

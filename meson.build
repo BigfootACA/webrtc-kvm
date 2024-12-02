@@ -95,6 +95,9 @@ webrtc_kvm_src = files([])
 webrtc_kvm_lib_src = files([])
 webrtc_kvm_server_src = files([])
 webrtc_kvm_client_src = files([])
+webrtc_kvm_plugins = []
+plugins_dir = meson.current_build_dir() / 'plugins'
+plugins_install_dir = get_option('libdir') / 'webrtc-kvm'
 subdir('src')
 
 web_builtin_dir = join_paths(meson.current_source_dir(), 'assets/web')
@@ -148,6 +151,20 @@ webrtc_kvm_server = shared_library(
 	],
 	install: true,
 	include_directories: inc,
+)
+
+subdir('src/plugins')
+plugins_script = join_paths(meson.current_source_dir(), 'assets/plugins.py')
+prepare_plugins_dir = custom_target(
+	'prepare_plugins_dir',
+	input: webrtc_kvm_plugins,
+	output: ['plugins'],
+	command: [prog_python, plugins_script, 'copy-plugins', plugins_dir, '@INPUT@'],
+	build_by_default: true,
+)
+meson.add_install_script(
+	prog_python, plugins_script, 'install-plugins',
+	plugins_dir, plugins_install_dir,
 )
 
 webrtc_kvm = executable(
