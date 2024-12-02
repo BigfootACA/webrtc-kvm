@@ -35,7 +35,7 @@ class BrotliCompressor:public Compressor{
 		virtual std::shared_ptr<Blob>CompressEnd(std::shared_ptr<CompressContext>ctx)final;
 };
 
-cdecl_attr_used BrotliCompressor brotli_compressor;
+DECL_COMPRESS(BrotliCompressor,brotli)
 
 std::shared_ptr<CompressContext>BrotliCompressor::CompressInit(){
 	auto ctx=std::make_shared<BrotliCompressContext>();

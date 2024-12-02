@@ -8,6 +8,7 @@
 
 #include<bzlib.h>
 #include"compress.h"
+#include"defines.h"
 #include"lib/exception.h"
 
 class Bzip2CompressContext:public CompressContext{
@@ -31,6 +32,8 @@ class Bzip2Compressor:public Compressor{
 		void CompressFeed(std::shared_ptr<CompressContext>ctx,const Blob&input,size_t&pos)final;
 		void DecompressFeed(std::shared_ptr<CompressContext>ctx,const Blob&input,size_t&pos)final;
 };
+
+DECL_COMPRESS(Bzip2Compressor,bzip2)
 
 std::shared_ptr<CompressContext>Bzip2Compressor::DecompressInit(){
 	auto ctx=std::make_shared<Bzip2CompressContext>();
@@ -98,4 +101,8 @@ void Bzip2Compressor::CompressFeed(std::shared_ptr<CompressContext>ctx,const Blo
 		g->len+=processed;
 	}while(status!=BZ_STREAM_END);
 	pos=input.GetLength()-g->zs.avail_in;
+}
+
+bool Bzip2Compressor::IsCompressed(const Blob&data){
+	return true;
 }

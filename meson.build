@@ -39,11 +39,6 @@ libyaml_cpp = dependency('yaml-cpp', required: true, static: static_link)
 libjsoncpp = dependency('jsoncpp', required: true, static: static_link)
 libuuid = dependency('uuid', required: true, static: static_link)
 openssl = dependency('openssl', required: true, static: static_link)
-zlib = dependency('zlib', required: false, static: static_link)
-libzstd = dependency('libzstd', required: false, static: static_link)
-libbrotlidec = dependency('libbrotlidec', required: false, static: static_link)
-libbrotlienc = dependency('libbrotlienc', required: false, static: static_link)
-bzip2 = dependency('bzip2', required: false, static: static_link)
 pam = dependency('pam', required: false, static: static_link)
 x264 = dependency('x264', required: false, static: static_link)
 rkmpp = dependency('rockchip_mpp', required: false, static: static_link)
@@ -131,11 +126,6 @@ webrtc_kvm_server = shared_library(
 		libmicrohttpd,
 		libyaml_cpp,
 		libjsoncpp,
-		zlib,
-		libzstd,
-		libbrotlidec,
-		libbrotlienc,
-		bzip2,
 		pam,
 		x264,
 		rkmpp,

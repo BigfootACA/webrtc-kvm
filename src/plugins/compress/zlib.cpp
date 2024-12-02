@@ -113,7 +113,7 @@ class GzipCompressor:public ZlibCompressor{
 		inline std::string GetType()final{return "gzip";}
 };
 
-cdecl_attr_used GzipCompressor gzip_compressor;
+DECL_COMPRESS(GzipCompressor,gzip)
 
 class DeflateCompressor:public ZlibCompressor{
 	public:
@@ -125,4 +125,4 @@ class DeflateCompressor:public ZlibCompressor{
 		inline std::string GetType()final{return "deflate";}
 };
 
-cdecl_attr_used DeflateCompressor deflate_compressor;
+DECL_COMPRESS(DeflateCompressor,deflate)

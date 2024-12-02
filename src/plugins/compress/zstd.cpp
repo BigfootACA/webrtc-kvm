@@ -33,7 +33,7 @@ class ZStandardCompressor:public Compressor{
 		void DecompressFeed(std::shared_ptr<CompressContext>ctx,const Blob&input,size_t&pos)final;
 };
 
-cdecl_attr_used ZStandardCompressor zstd_compressor;
+DECL_COMPRESS(ZStandardCompressor,zstd)
 
 std::shared_ptr<CompressContext>ZStandardCompressor::CompressInit(){
 	auto ctx=std::make_shared<ZStandardCompressContext>();
