@@ -121,6 +121,14 @@ All audio streaming are not implements now
 | VDPAU                          | ⛔ TODO     |
 | CedarX (Allwinner)             | ⛔ TODO     |
 | RKMPP (Rockchip)               | ✅ WORKS    |
+| FFmpeg AVCodec                 | ⛔ TODO     |
+
+#### Video Transformer
+
+| Type                           | Status     |
+|--------------------------------|------------|
+| FFmpeg SWScale                 | ⚠️ UNTESTED |
+| RGA (Rockchip)                 | ✅ WORKS   |
 
 #### Keyboard and Mouse
 
