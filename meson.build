@@ -92,7 +92,9 @@ enable_client.disable_if(not libavutil.found())
 enable_client.disable_if(not libswscale.found())
 
 webrtc_kvm_src = files([])
-webrtc_client_src = files([])
+webrtc_kvm_lib_src = files([])
+webrtc_kvm_server_src = files([])
+webrtc_kvm_client_src = files([])
 subdir('src')
 
 web_builtin_dir = join_paths(meson.current_source_dir(), 'assets/web')
@@ -102,18 +104,30 @@ web_builtin_asm = custom_target(
 	input : 'assets/assets.py',
 	command : [prog_python, '@INPUT@', '@OUTPUT@', web_builtin_dir, 'web'],
 )
-webrtc_kvm_src += web_builtin_asm
+webrtc_kvm_server_src += web_builtin_asm
 
-webrtc_kvm = executable(
-	'webrtc-kvm',
-	webrtc_kvm_src,
+webrtc_kvm_lib = shared_library(
+	'webrtc-kvm-lib',
+	webrtc_kvm_lib_src,
+	dependencies: [
+		libyaml_cpp,
+		libjsoncpp,
+		libuuid,
+		openssl,
+	],
+	link_language: 'cpp',
+	install: true,
+	include_directories: inc,
+)
+
+webrtc_kvm_server = shared_library(
+	'webrtc-kvm-server',
+	webrtc_kvm_server_src,
 	dependencies: [
 		libdatachannel,
 		libmicrohttpd,
 		libyaml_cpp,
 		libjsoncpp,
-		libuuid,
-		openssl,
 		zlib,
 		libzstd,
 		libbrotlidec,
@@ -128,8 +142,23 @@ webrtc_kvm = executable(
 		libavutil,
 		libswscale,
 	],
+	link_language: 'cpp',
+	link_with: [
+		webrtc_kvm_lib,
+	],
+	install: true,
+	include_directories: inc,
+)
+
+webrtc_kvm = executable(
+	'webrtc-kvm',
+	webrtc_kvm_src,
 	link_args: link_args,
 	link_language: 'cpp',
+	link_with: [
+		webrtc_kvm_lib,
+		webrtc_kvm_server,
+	],
 	install: true,
 	include_directories: inc,
 )
@@ -137,7 +166,7 @@ webrtc_kvm = executable(
 if enable_client.enabled()
 	executable(
 		'webrtc-kvm-client',
-		webrtc_client_src,
+		webrtc_kvm_client_src,
 		dependencies: [
 			libdatachannel,
 			libjsoncpp,
@@ -151,6 +180,9 @@ if enable_client.enabled()
 		],
 		link_args: link_args,
 		link_language: 'cpp',
+		link_with: [
+			webrtc_kvm_lib,
+		],
 		install: true,
 		include_directories: inc,
 	)
