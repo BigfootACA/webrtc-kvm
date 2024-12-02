@@ -7,6 +7,19 @@
  */
 
 #include"compress.h"
+#include"abstract/plugin.h"
+#include"lib/strings.h"
+#include<format>
+
+Compressor*Compressor::LoadPlugin(const std::string&name){
+	std::string real=name;
+	StringReplaceAll(real,"-","_");
+	auto file=std::format("compress_{}.so",real);
+	auto func=std::format("webrtc_plugin_compress_get_{}",real);
+	auto plugin=Plugin::Open(file);
+	auto factory=plugin->Lookup<Compressor*(*)(void)>(func);
+	return factory();
+}
 
 Compressor*Compressor::ByType(const std::string&type){
 	for(auto c:compressor)if(c->GetType()==type)return c;
@@ -15,7 +28,7 @@ Compressor*Compressor::ByType(const std::string&type){
 
 Compressor*Compressor::ByName(const std::string&name){
 	for(auto c:compressor)if(c->IsNameSupported(name))return c;
-	return nullptr;
+	return LoadPlugin(name);
 }
 
 Compressor*Compressor::ByExt(const std::string&ext){

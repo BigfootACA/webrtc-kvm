@@ -48,6 +48,7 @@ class Compressor{
 		virtual std::shared_ptr<Blob>DecompressEnd(std::shared_ptr<CompressContext>ctx);
 		std::shared_ptr<Blob>Compress(const Blob&input,size_t&pos);
 		std::shared_ptr<Blob>Decompress(const Blob&input,size_t&pos);
+		static Compressor*LoadPlugin(const std::string&name);
 		static Compressor*ByType(const std::string&type);
 		static Compressor*ByName(const std::string&name);
 		static Compressor*ByExt(const std::string&ext);
@@ -62,4 +63,10 @@ class Compressor{
 		static std::vector<Compressor*>compressor;
 };
 
+#define DECL_COMPRESS_BUILTIN(cls,name) cdecl_attr_used cls compressor_##name;
+#define DECL_COMPRESS(cls,name) \
+	DECL_COMPRESS_BUILTIN(cls,name) \
+	extern "C" Compressor*webrtc_plugin_compress_get_##name(){\
+		return &compressor_##name;\
+	}
 #endif
