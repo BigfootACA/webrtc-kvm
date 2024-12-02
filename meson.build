@@ -40,9 +40,6 @@ libjsoncpp = dependency('jsoncpp', required: true, static: static_link)
 libuuid = dependency('uuid', required: true, static: static_link)
 openssl = dependency('openssl', required: true, static: static_link)
 pam = dependency('pam', required: false, static: static_link)
-x264 = dependency('x264', required: false, static: static_link)
-rkmpp = dependency('rockchip_mpp', required: false, static: static_link)
-rkvpu = dependency('rockchip_vpu', required: false, static: static_link)
 libavutil = dependency('libavutil', required: false, static: static_link)
 libavcodec = dependency('libavcodec', required: false, static: static_link)
 libavformat = dependency('libavformat', required: false, static: static_link)
@@ -127,13 +124,6 @@ webrtc_kvm_server = shared_library(
 		libyaml_cpp,
 		libjsoncpp,
 		pam,
-		x264,
-		rkmpp,
-		rkvpu,
-		libavcodec,
-		libavformat,
-		libavutil,
-		libswscale,
 	],
 	link_language: 'cpp',
 	link_with: [

@@ -8,7 +8,7 @@
 
 #ifndef FFMPEG_SHARED_H
 #define FFMPEG_SHARED_H
-#include"../stream.h"
+#include"stream.h"
 #include"string/strings.h"
 #include"lib/exception.h"
 #include"lib/readable.h"

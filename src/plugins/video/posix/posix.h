@@ -12,7 +12,7 @@
 #include<sys/poll.h>
 #include<arpa/inet.h>
 #include<netinet/in.h>
-#include"../stream.h"
+#include"stream.h"
 #include"algo/url.h"
 
 struct SocketAddress{

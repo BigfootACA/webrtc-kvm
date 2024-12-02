@@ -8,7 +8,7 @@
 
 #ifndef RKMPP_H
 #define RKMPP_H
-#include"../stream.h"
+#include"stream.h"
 #include<rockchip/vpu.h>
 #include<rockchip/rk_mpi.h>
 #include<rockchip/mpp_log.h>

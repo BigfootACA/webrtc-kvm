@@ -11,8 +11,6 @@
 #include"string/strings.h"
 #include<linux/videodev2.h>
 
-auto x=MPP_VIDEO_CodingAVC;
-
 uint32_t RockchipMediaProcessPlatform::MppCodingTypeToFourcc(MppCodingType type){
 	switch(type){
 		case MPP_VIDEO_CodingMPEG2:return V4L2_PIX_FMT_MPEG2;

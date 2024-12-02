@@ -10,7 +10,7 @@
 #define V4L2_DEV_H
 #include"lib/log.h"
 #include"../v4l2.h"
-#include"../../stream.h"
+#include"stream.h"
 #include<sys/mman.h>
 #include<linux/videodev2.h>
 #include<linux/dma-buf.h>

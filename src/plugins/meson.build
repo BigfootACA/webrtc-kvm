@@ -1,1 +1,2 @@
 subdir('compress')
+subdir('video')

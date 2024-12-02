@@ -16,8 +16,6 @@ class RockchipMediaProcessPlatformFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used RockchipMediaProcessPlatformFactory rkmpp_factory;
-
 Stream*RockchipMediaProcessPlatformFactory::Create(webrtc_kvm*ctx){
 	return new RockchipMediaProcessPlatform(ctx);
 }
@@ -26,3 +24,5 @@ RockchipMediaProcessPlatform::RockchipMediaProcessPlatform(webrtc_kvm*ctx){
 	this->ctx=ctx;
 	if(ctx->video.fps!=0)fps=ctx->video.fps;
 }
+
+DECL_FACTORY(RockchipMediaProcessPlatformFactory,rkmpp)

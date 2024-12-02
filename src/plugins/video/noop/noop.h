@@ -8,7 +8,7 @@
 
 #ifndef NOOP_H
 #define NOOP_H
-#include"../stream.h"
+#include"stream.h"
 
 class NoopSink:public Stream{
 	public:

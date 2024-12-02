@@ -16,8 +16,6 @@ class PosixInputStreamFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used PosixInputStreamFactory posix_in_factory;
-
 Stream*PosixInputStreamFactory::Create(webrtc_kvm*ctx){
 	return new PosixInputStream(ctx);
 }
@@ -34,8 +32,6 @@ class PosixOutputStreamFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used PosixOutputStreamFactory posix_out_factory;
-
 Stream*PosixOutputStreamFactory::Create(webrtc_kvm*ctx){
 	return new PosixOutputStream(ctx);
 }
@@ -43,3 +39,6 @@ Stream*PosixOutputStreamFactory::Create(webrtc_kvm*ctx){
 PosixOutputStream::PosixOutputStream(webrtc_kvm*ctx){
 	this->ctx=ctx;
 }
+
+DECL_FACTORY(PosixInputStreamFactory,posix_in)
+DECL_FACTORY(PosixOutputStreamFactory,posix_out)

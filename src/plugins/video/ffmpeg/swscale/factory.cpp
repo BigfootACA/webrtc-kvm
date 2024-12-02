@@ -16,8 +16,6 @@ class SwscalePipeFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used SwscalePipeFactory swscale_out_factory;
-
 Stream*SwscalePipeFactory::Create(webrtc_kvm*ctx){
 	return new SwscalePipe(ctx);
 }
@@ -27,3 +25,5 @@ SwscalePipe::SwscalePipe(webrtc_kvm*ctx){
 	this->fmt_in=AV_PIX_FMT_NONE;
 	this->fmt_out=AV_PIX_FMT_NONE;
 }
+
+DECL_FACTORY(SwscalePipeFactory,swscale)

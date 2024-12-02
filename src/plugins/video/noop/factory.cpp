@@ -16,8 +16,6 @@ class NoopSinkFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used NoopSinkFactory noop_out_factory;
-
 Stream*NoopSinkFactory::Create(webrtc_kvm*ctx){
 	return new NoopSink(ctx);
 }
@@ -34,8 +32,6 @@ class NoopPipeFactory:public StreamFactory{
 		[[nodiscard]] Stream*Create(webrtc_kvm*ctx)final;
 };
 
-cdecl_attr_used NoopPipeFactory noop_pipe_factory;
-
 Stream*NoopPipeFactory::Create(webrtc_kvm*ctx){
 	return new NoopPipe(ctx);
 }
@@ -43,3 +39,6 @@ Stream*NoopPipeFactory::Create(webrtc_kvm*ctx){
 NoopPipe::NoopPipe(webrtc_kvm*ctx){
 	this->ctx=ctx;
 }
+
+DECL_FACTORY(NoopSinkFactory,noop_out)
+DECL_FACTORY(NoopPipeFactory,noop_pipe)

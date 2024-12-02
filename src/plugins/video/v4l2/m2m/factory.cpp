@@ -8,8 +8,6 @@
 
 #include"v4l2_m2m.h"
 
-cdecl_attr_used V4L2MemoryToMemoryFactory v4l2_memory_to_memory_factory;
-
 V4L2MemoryToMemory::V4L2MemoryToMemory(webrtc_kvm*ctx){
 	this->ctx=ctx;
 	out=new V4L2Output(ctx);
@@ -26,3 +24,5 @@ V4L2MemoryToMemory::~V4L2MemoryToMemory(){
 	delete cap;
 	delete out;
 }
+
+DECL_FACTORY(V4L2MemoryToMemoryFactory,v4l2_m2m)

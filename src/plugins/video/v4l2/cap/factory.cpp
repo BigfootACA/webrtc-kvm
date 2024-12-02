@@ -8,8 +8,8 @@
 
 #include"v4l2_cap.h"
 
-cdecl_attr_used V4L2CaptureFactory v4l2_capture_factory;
-
 Stream*V4L2CaptureFactory::Create(webrtc_kvm*ctx){
 	return new V4L2Capture(ctx);
 }
+
+DECL_FACTORY(V4L2CaptureFactory,v4l2_cap)
