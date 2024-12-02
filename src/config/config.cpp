@@ -8,6 +8,7 @@
 
 #include"configs.h"
 #include"video/stream.h"
+#include"abstract/plugin.h"
 #include"lib/exception.h"
 #include"lib/log.h"
 
@@ -70,11 +71,18 @@ static void load_http(webrtc_kvm*ctx,YAML::Node obj){
 	}
 }
 
+static void load_plugins(webrtc_kvm*ctx,YAML::Node obj){
+	if(!obj)return;
+	if(auto v=obj["plugins"])for(const auto&i:v)
+		Plugin::Open(i.second.as<std::string>());
+}
+
 void ConfigLoadYAML(webrtc_kvm*ctx,YAML::Node obj){
 	if(!obj)return;
 	load_usb(ctx,obj["usb"]);
 	load_http(ctx,obj["http"]);
 	load_video(ctx,obj["video"]);
+	load_plugins(ctx,obj["plugins"]);
 }
 
 bool ConfigLoadFile(webrtc_kvm*ctx,const char*path){
