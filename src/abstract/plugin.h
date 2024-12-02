@@ -13,7 +13,7 @@
 #include<memory>
 class Plugin{
 	public:
-		~Plugin(){dlclose(handler);}
+		~Plugin();
 		inline void*ToHandler(){return handler;}
 		inline explicit operator void*(){return ToHandler();}
 		void*LookupRAW(const std::string&sym);
@@ -29,8 +29,10 @@ class Plugin{
 			return (T)OpenSymbolRAW(plugin,symbol);
 		}
 	private:
+		void TryLoadByName(const std::string&name);
+		void TryLoadByPath(const std::string&path);
 		explicit Plugin(const std::string&name);
-		std::string name;
+		std::string name,path;
 		void*handler;
 		static std::map<std::string,std::shared_ptr<Plugin>>loaded;
 };
