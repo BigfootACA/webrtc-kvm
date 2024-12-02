@@ -109,6 +109,10 @@ class Stream{
 		virtual void OpenDevice();
 		void LoadConfig(YAML::Node&cfg);
 		void SendToNext(StreamBuffer*buf);
+		void ProcessNext(std::function<bool(
+			std::shared_ptr<StreamLink>output,Stream*sink,
+			std::function<bool(StreamBuffer*buf)>process
+		)>callback);
 		void ProcessInput(StreamBuffer*buffer);
 		[[nodiscard]] size_t&OutputPlaneSize(size_t id,uint32_t plane);
 		[[nodiscard]] size_t&InputPlaneSize(uint32_t plane);

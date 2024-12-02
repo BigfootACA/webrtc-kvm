@@ -26,7 +26,10 @@ void Stream::ProcessInput(StreamBuffer*buffer){
 	}
 }
 
-void Stream::SendToNext(StreamBuffer*buf){
+void Stream::ProcessNext(std::function<bool(
+	std::shared_ptr<StreamLink>output,Stream*sink,
+	std::function<bool(StreamBuffer*buf)>process
+)>callback){
 	auto type=GetType();
 	if(unlikely(type!=STREAM_SOURCE&&type!=STREAM_PIPE))
 		throw InvalidArgument("cannot send stream when type is not source or pipe in {}",GetID());
@@ -34,8 +37,17 @@ void Stream::SendToNext(StreamBuffer*buf){
 	for(auto output:outputs){
 		auto sink=output->GetSink();
 		if(unlikely(!sink))continue;
-		sink->ProcessInput(buf);
-		sent=true;
+		auto process=[sink](StreamBuffer*buf){
+			sink->ProcessInput(buf);
+			return true;
+		};
+		if(callback(output,sink,process))sent=true;
 	}
 	if(unlikely(!sent))throw RuntimeError("no any output to send stream");
+}
+
+void Stream::SendToNext(StreamBuffer*buf){
+	ProcessNext([buf](auto out,auto sink,auto process){
+		return process(buf);
+	});
 }
