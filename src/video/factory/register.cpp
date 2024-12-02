@@ -8,6 +8,9 @@
 
 #include"../stream.h"
 #include"lib/exception.h"
+#include"lib/log.h"
+#include"lib/strings.h"
+#include"abstract/plugin.h"
 
 struct StreamFactoryInfo{
 	std::map<std::string,StreamFactory*>factories;
@@ -15,10 +18,27 @@ struct StreamFactoryInfo{
 
 StreamFactoryInfo*StreamFactory::info;
 
-StreamFactory*StreamFactory::GetFactoryByDriverName(const std::string&driver){
+StreamFactory*StreamFactory::LoadPlugin(const std::string&name){
+	std::string real=name;
+	StringReplaceAll(real,"-","_");
+	auto file=std::format("video_{}.so",real);
+	auto func=std::format("webrtc_plugin_video_get_{}",real);
+	auto plugin=Plugin::Open(file);
+	auto factory=plugin->Lookup<StreamFactory*(*)(void)>(func);
+	return factory();
+}
+
+StreamFactory*StreamFactory::GetFactoryByDriverName(const std::string&driver,bool plugin){
 	if(unlikely(!info||driver.empty()))return nullptr;
 	auto i=info->factories.find(driver);
-	if(i==info->factories.end())return nullptr;
+	if(i==info->factories.end()){
+		if(plugin)try{
+			return LoadPlugin(driver);
+		}catch(std::exception&exc){
+			log_warn("load plugin {} failed: {}",driver,exc.what());
+		}
+		return nullptr;
+	}
 	return i->second;
 }
 

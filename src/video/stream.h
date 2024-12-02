@@ -152,10 +152,11 @@ class StreamFactory{
 		[[nodiscard]] virtual std::string GetDriverName()const=0;
 		[[nodiscard]] virtual Stream*Create(webrtc_kvm*ctx)=0;
 		[[nodiscard]] virtual Stream*CreateFromConfig(webrtc_kvm*ctx,YAML::Node&cfg);
-		[[nodiscard]] static StreamFactory*GetFactoryByDriverName(const std::string&driver);
+		[[nodiscard]] static StreamFactory*GetFactoryByDriverName(const std::string&driver,bool plugin=true);
 		[[nodiscard]] static Stream*CreateStreamByDriverName(webrtc_kvm*ctx,const std::string&driver);
 		[[nodiscard]] static Stream*CreateStreamFromConfig(webrtc_kvm*ctx,YAML::Node&cfg);
 		static void CreateStreamsFromConfig(webrtc_kvm*ctx,StreamList*list,YAML::Node&cfg);
+		static StreamFactory*LoadPlugin(const std::string&name);
 	protected:
 		void RegisterSelf();
 		void UnregisterSelf();
@@ -177,4 +178,11 @@ class StreamList{
 };
 
 extern bool StringToPipeRole(const std::string&val,StreamPipeRole&role);
+
+#define DECL_FACTORY_BUILTIN(cls,name) cdecl_attr_used cls video_##name##_factory;
+#define DECL_FACTORY(cls,name) \
+	DECL_FACTORY_BUILTIN(cls,name) \
+	extern "C" StreamFactory*webrtc_plugin_video_get_##name(){\
+		return &video_##name##_factory;\
+	}
 #endif
