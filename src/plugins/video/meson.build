@@ -10,3 +10,5 @@ subdir('v4l2')
 webrtc_kvm_src_plugins_video += webrtc_kvm_src_plugins_video_v4l2
 subdir('rkmpp')
 webrtc_kvm_src_plugins_video += webrtc_kvm_src_plugins_video_rkmpp
+subdir('rkrga')
+webrtc_kvm_src_plugins_video += webrtc_kvm_src_plugins_video_rkrga
