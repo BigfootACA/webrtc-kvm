@@ -12,6 +12,7 @@
 #include<utility>
 #include<vector>
 #include<linux/media.h>
+#include<sys/types.h>
 
 class MediaPad;
 class MediaLink;

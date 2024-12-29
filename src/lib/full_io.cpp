@@ -12,7 +12,7 @@
 #include<unistd.h>
 #include<cstdint>
 #include<cstdlib>
-#include<sys/poll.h>
+#include<poll.h>
 #include"full_io.h"
 #include"defines.h"
 

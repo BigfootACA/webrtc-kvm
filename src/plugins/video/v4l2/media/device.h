@@ -12,6 +12,7 @@
 #include<memory>
 #include<vector>
 #include<linux/media.h>
+#include<sys/types.h>
 
 class MediaTopology;
 class MediaEntityDesc;

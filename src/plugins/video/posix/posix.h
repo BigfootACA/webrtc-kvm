@@ -8,8 +8,8 @@
 
 #ifndef POSIX_STREAM_H
 #define POSIX_STREAM_H
+#include<poll.h>
 #include<sys/un.h>
-#include<sys/poll.h>
 #include<arpa/inet.h>
 #include<netinet/in.h>
 #include"stream.h"

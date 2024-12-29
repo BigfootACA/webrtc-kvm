@@ -14,6 +14,7 @@
 #include<vector>
 #include<dirent.h>
 #include<unistd.h>
+#include<sys/types.h>
 extern bool PathExists(const std::string&path);
 extern std::string PathReadLink(const std::string&path);
 extern void CreateFolder(const std::string&path,mode_t mode=0755,bool exists=false);
