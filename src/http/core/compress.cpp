@@ -19,9 +19,18 @@ HttpCompress::HttpCompress(
 }
 
 std::shared_ptr<Blob>HttpCompress::GenerateCompress(const std::string&type){
+	Compressor*method;
+	static std::vector<std::string>failed{};
 	if(std::find(skipped.begin(),skipped.end(),type)!=skipped.end())return nullptr;
-	auto method=Compressor::ByName(type);
-	if(!method)return nullptr;
+	try{
+		if(!(method=Compressor::ByName(type)))return nullptr;
+	}catch(std::exception&exc){
+		if(std::find(failed.begin(),failed.end(),type)==failed.end()){
+			log_warn("find compress {} with {} failed: {}",name,type,exc.what());
+			failed.push_back(type);
+		}
+		return nullptr;
+	}
 	auto len=file->GetLength();
 	try{
 		size_t pos=0;
