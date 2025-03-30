@@ -41,6 +41,14 @@ void RockchipMediaProcessPlatform::EncoderPostInit(){
 	config_persist.FillToEncoder(enc_cfg);
 	if(MPP_ISERR(mpi->control(mpp_ctx,MPP_ENC_SET_CFG,enc_cfg)))
 		throw RuntimeError("mpp set encoder config failed: {}",(int)ret);
+	if(video_type==MPP_VIDEO_CodingAVC||video_type==MPP_VIDEO_CodingHEVC){
+		auto sei_mode=MPP_ENC_SEI_MODE_DISABLE;
+		if(MPP_ISERR(mpi->control(mpp_ctx,MPP_ENC_SET_SEI_CFG,&sei_mode)))
+			throw RuntimeError("mpp set encoder sei config failed: {}",(int)ret);
+		auto header_mode=MPP_ENC_HEADER_MODE_EACH_IDR;
+		if(MPP_ISERR(mpi->control(mpp_ctx,MPP_ENC_SET_HEADER_MODE,&header_mode)))
+			throw RuntimeError("mpp set encoder header mode failed: {}",(int)ret);
+	}
 	if(MPP_ISERR(mpp_frame_init(&enc_frm)))
 		throw RuntimeError("mpp init frame failed: {}",(int)ret);
 	if(MPP_ISERR(mpp_buffer_get(buf_grp,&pkt_buf,frame_size))||!pkt_buf)
