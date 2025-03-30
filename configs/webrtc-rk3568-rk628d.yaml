@@ -1,0 +1,108 @@
+##
+## Copyright (C) 2024 BigfootACA <bigfoot@classfun.cn>
+##
+## SPDX-License-Identifier: BSD-3-Clause
+##
+## Device:      Firefly ROC-RK3568-PC
+##   SoC:       Rockchip RK3568
+##   CPU:       ARM Cortex-A55 @ 1.99GHz * 4
+##   Memory:    LPDDR4 4GiB
+##   Video Source:
+##     Capture:   Rockchip RK628D HDMI2CSI (Firefly)
+##     Interface: HDMI to MIPI-CSI
+##     Format:    1920x1080@60hz
+##     Fourcc:    UYVY
+##   Video Encoder:
+##     Format:    H.264
+##     Size:      1920x1080@60hz
+## OS:
+##   Distro: Ubuntu LTS 24.04
+##   Kernel: 5.10.198 (OEM)
+##   Extra Packages:
+##     LibDataChannel:
+##       libdatachannel-dev: https://deb-multimedia.org/dists/unstable/main/binary-arm64/package/libdatachannel-dev
+##       libdatachannel0.22: https://deb-multimedia.org/dists/unstable/main/binary-arm64/package/libdatachannel0.22
+##     RKMPP: https://launchpad.net/~liujianfeng1994/+archive/ubuntu/rockchip-multimedia
+##
+
+# HTTP API Server
+http:
+  # HTTP server port
+  port: 2345
+
+# USB Gadget settings
+usb:
+  # USB Device Controller
+  udc: fcc00000.dwc3
+  # USB Gadget ConfigFS Name
+  gadget: webrtc-kvm
+  # USB Vendor ID
+  id_vendor: 0x1D6B
+  # USB Product ID
+  id_product: 0x0104
+  # USB Manufacturer Name
+  manufacturer: ClassFun
+  # USB Product Name
+  product: WebRTC KVM
+
+# Video related settings
+video:
+  streams:
+    - id: hdmi-cap
+      name: HDMI Capture
+      driver: v4l2-cap
+      device: /dev/video0
+      fourcc: UYVY
+
+    - id: h264-encoder
+      name: H.264 Encoder
+      driver: rkmpp
+      role: encoder
+      fourcc: H264
+
+      config:
+        s32:base:low_delay: 1
+        s32:rc:mode: 0
+        s32:rc:drop_mode: 0
+        s32:rc:drop_thd: 20
+        s32:rc:drop_gap: 1
+        # Target bitrate: 15 Mbit
+        s32:rc:bps_target: 10000000
+        # Max bitrate: 25 Mbit
+        s32:rc:bps_max: 15000000
+        # Min bitrate: 5 Mbit
+        s32:rc:bps_min: 5000000
+        s32:rc:qp_init: -1
+        s32:rc:qp_max: 51
+        s32:rc:qp_min: 10
+        s32:rc:qp_max_i: 51
+        s32:rc:qp_min_i: 10
+        s32:rc:qp_ip: 2
+        s32:rc:fqp_min_i: 10
+        s32:rc:fqp_max_i: 51
+        s32:rc:fqp_min_p: 10
+        s32:rc:fqp_max_p: 51
+        # 0: Annex-B, 1: AVCC
+        s32:h264:stream_type: 1
+        # H264_PROFILE_BASELINE
+        s32:h264:profile: 66
+
+    - id: webrtc
+      name: WebRTC Streamer
+      driver: webrtc
+
+  links:
+    # From HDMI Capture to H.264 Encoder
+    - source: hdmi-cap
+      sink: h264-encoder
+      type: dmabuf
+
+    # From H.264 Encoder to WebRTC Streamer
+    - source: h264-encoder
+      sink: webrtc
+      type: pointer
+
+  auto_stop: true
+  width: 1920
+  height: 1080
+  fps: 60

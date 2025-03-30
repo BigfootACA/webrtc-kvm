@@ -54,6 +54,7 @@ video:
       driver: v4l2-m2m
       # Video4Linux2 Memory-to-Memory encoder device
       device: /dev/video-enc0
+      role: encoder
       fourcc: H264
 
     - id: webrtc
@@ -154,12 +155,13 @@ All audio streaming are not implements now
 
 ### Tested devices
 
-| Name                | SoC               | Capture Device      | Capture Interface | Kernel           | Video                |
-|---------------------|-------------------|---------------------|-------------------|------------------|----------------------|
-| Ant-C v3 IP-KVM     | Allwinner V3      | ITE IT6616FN        | HDMI to MIPI-CSI  | 6.6.2 (Mainline) | H.264 1920x1080@60hz |
-| Raspberry Pi 3B     | Broadcom BCM2837  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
-| Raspberry Pi 4B     | Broadcom BCM2711  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
-| Raspberry Pi 4B     | Broadcom BCM2711  | MacroSilicon MS2130 | HDMI to USB 3.0   | 6.6.44           | H.264 1920x1080@60hz |
-| Rockchip RK3588 EVB | Rockchip RK3588   | Rockchip HDMI-RX    | HDMI              | 5.10.66          | H.264 1920x1080@60hz |
+| Name                  | SoC               | Capture Device      | Capture Interface | Kernel           | Video                |
+|-----------------------|-------------------|---------------------|-------------------|------------------|----------------------|
+| Ant-C v3 IP-KVM       | Allwinner V3      | ITE IT6616FN        | HDMI to MIPI-CSI  | 6.6.2 (Mainline) | H.264 1920x1080@60hz |
+| Raspberry Pi 3B       | Broadcom BCM2837  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
+| Raspberry Pi 4B       | Broadcom BCM2711  | Toshiba TC358743    | HDMI to MIPI-CSI  | 6.6.44           | H.264 1920x1080@50hz |
+| Raspberry Pi 4B       | Broadcom BCM2711  | MacroSilicon MS2130 | HDMI to USB 3.0   | 6.6.44           | H.264 1920x1080@60hz |
+| Rockchip RK3588 EVB   | Rockchip RK3588   | Rockchip HDMI-RX    | HDMI              | 5.10.66          | H.264 1920x1080@60hz |
+| Firefly ROC-RK3568-PC | Rockchip RK3568   | Rockchip RK628D     | HDMI to MIPI-CSI  | 5.10.198         | H.264 1920x1080@60hz |
 
 Tested config files for devices: [configs](configs)
