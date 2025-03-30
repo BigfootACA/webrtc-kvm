@@ -21,6 +21,11 @@ Plugin::~Plugin(){
 	log_info("unloaded plugin {}",path);
 }
 
+[[noreturn]] static void OpenFailed(const std::string&name){
+	if(errno!=0)throw ErrnoException("open plugin {} failed",name);
+	throw RuntimeError("open plugin {} failed: {}",name,dlerror());
+}
+
 void Plugin::TryLoadByName(const std::string&name){
 	static std::string prefix[]={
 		"",
@@ -42,18 +47,12 @@ void Plugin::TryLoadByName(const std::string&name){
 		}
 		return;
 	}
-	throw RuntimeError(
-		"open plugin {} failed: {}",
-		name,dlerror()?:strerror(errno)
-	);
+	OpenFailed(name);
 }
 
 void Plugin::TryLoadByPath(const std::string&path){
 	handler=dlopen(path.c_str(),RTLD_NOW);
-	if(!handler)throw RuntimeError(
-		"open plugin {} failed: {}",
-		name,dlerror()?:strerror(errno)
-	);
+	if(!handler)OpenFailed(name);
 	this->path=path;
 	this->name=PathBaseName(name);
 	log_info("loaded plugin {}",path);
